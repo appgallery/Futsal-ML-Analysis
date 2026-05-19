@@ -68,9 +68,9 @@ class DataTransformation:
         ).reset_index(drop=True)
         return matches
 
-    def clean_draw(self,matches):
-        matches['isDraw'] = matches['isDraw'].map({'yes': 1,'no': 0})
-        return matches
+    # def clean_draw(self,matches):
+    #     matches['isDraw'] = matches['isDraw'].map({'yes': 1,'no': 0})
+    #     return matches
 
     def create_home_away_goals(self,matches):
         matches['home_goals'] = np.where(
@@ -83,12 +83,14 @@ class DataTransformation:
             matches['winningTeamGoals'],
             matches['losingTeamGoals']
         )
+        return matches
 
     def create_outcome(self, matches):
         matches['outcome'] = matches.apply(
             lambda row: 1 if row['winningTeam'] == row['homeTeamId'] else 0,
             axis=1
         )
+        return matches
     
     def create_features(self, matches):
         for col in self.feature_cols:
@@ -402,7 +404,7 @@ class DataTransformation:
                 else:
                     h2h['team2_wins'] += 1
 
-
+        return matches
             
     
     def transform(self, save_csv=True):
@@ -422,19 +424,19 @@ class DataTransformation:
         matches = self.clean_date(matches)
 
         # Clean Draw Column
-        matches = self.clean_draw(matches)
+        # matches = self.clean_draw(matches)
 
         # Create Outcome
-        self.create_outcome(matches)
+        matches = self.create_outcome(matches)
 
         # Create Home Away Goals
-        self.create_home_away_goals(matches)
+        matches = self.create_home_away_goals(matches)
 
         # Create Features
         matches = self.create_features(matches)
 
         # Feature Engineering
-        self.feature_engineer(matches)
+        matches = self.feature_engineer(matches)
 
         matches_ml = matches.copy()
 
@@ -443,7 +445,7 @@ class DataTransformation:
         if save_csv:
             match_ml.to_csv('data/matches_ml.csv', index=False)
 
-        return matches
+        return match_ml
 
 
 

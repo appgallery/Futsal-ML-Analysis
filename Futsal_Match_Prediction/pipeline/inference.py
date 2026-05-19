@@ -45,8 +45,8 @@ class Inference:
         
         # Create mappings
         raw_data = pd.read_csv("data/series-futsal-men-matches.csv")
-        self.name_to_id = dict(zip(raw_data['homeTeamName'], raw_data['homeTeamId']))
-        self.name_to_id.update(dict(zip(raw_data['awayTeamName'], raw_data['awayTeamId'])))
+        self.name_to_id = dict(zip(raw_data['homeTeamName'].str.strip(), raw_data['homeTeamId']))
+        self.name_to_id.update(dict(zip(raw_data['awayTeamName'].str.strip(), raw_data['awayTeamId'])))
         self.id_to_name = {v: k for k, v in self.name_to_id.items()}
         print("Inference State Ready!")
     
@@ -63,8 +63,8 @@ class Inference:
         away_id = data.awayID
         
         if home_id is None or away_id is None:
-            home_id = self.name_to_id.get(data.homeTeam)
-            away_id = self.name_to_id.get(data.awayTeam)
+            home_id = self.name_to_id.get(data.homeTeam.strip() if data.homeTeam else None)
+            away_id = self.name_to_id.get(data.awayTeam.strip() if data.awayTeam else None)
             
             if home_id is None or away_id is None:
                 missing = []
