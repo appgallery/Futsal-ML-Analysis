@@ -1,4 +1,4 @@
-from pipeline.inference import Inference, MatchInput
+from scripts.inference import Inference, MatchInput
 
 class InferencePipeline:
     def __init__(self):

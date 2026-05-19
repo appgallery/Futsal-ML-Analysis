@@ -5,9 +5,9 @@ import json
 from typing import Union
 
 from fastapi import APIRouter, Request, FastAPI, HTTPException, Depends
-from pipeline.inference import Inference, MatchInput, MatchOutputName, MatchOutputID
-from services.data_pipeline import DataPipeline
-import services.training_pipeline as TrainingPipeline
+from scripts.inference import Inference, MatchInput, MatchOutputName, MatchOutputID
+from pipeline.data_pipeline import DataPipeline
+from pipeline.training_pipeline import TrainingPipeline
 
 routes = APIRouter(tags=["Prediction"])
 
@@ -42,7 +42,7 @@ async def lifespan(app: FastAPI):
                 DataPipeline().run_pipeline()
                 
                 # Run Training Pipeline
-                TrainingPipeline.TrainingPipeline().run_pipeline()
+                TrainingPipeline().run_pipeline()
                 
                 # Update state
                 with open(STATE_FILE, 'w') as f:
