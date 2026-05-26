@@ -35,7 +35,9 @@ class MatchOutputID(BaseModel):
 class Inference:
     def __init__(self):
         self.model_path = "models/best_model.pkl"
+        self.features_path = "features/match_trained_features.pkl"
         self.model = self.load_model(self.model_path)
+        self.features = self.load_model(self.features_path)
         
         print("Initializing Inference State... (This may take a few seconds)")
         self.dt = DataTransformation()
@@ -130,8 +132,8 @@ class Inference:
             'h2h_home_win_rate': [h2h_home_win_rate]
         }
         
-        # Note: Must match exactly ModelTrainer.feature order
-        feature_cols = ['home_win_rate','away_win_rate','diff_goal_diff','diff_form','diff_attack','diff_defense','diff_elo','h2h_home_win_rate']
+        # Use features loaded from .pkl
+        feature_cols = self.features
         
         X_infer = pd.DataFrame(feature_dict)[feature_cols]
         

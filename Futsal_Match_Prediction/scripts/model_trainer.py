@@ -67,6 +67,7 @@ class ModelTrainer:
                 pipeline = self.build_model(algo)
                 self.grid_models.append((
                     "RandomForestClassifier",
+                    
                     GridSearchCV(
                         pipeline,
                         grid_params,

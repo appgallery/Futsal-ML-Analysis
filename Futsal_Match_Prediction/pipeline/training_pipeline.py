@@ -1,5 +1,5 @@
 import pandas as pd
-from pipeline.model_trainer import ModelTrainer
+from scripts.model_trainer import ModelTrainer
 
 
 class TrainingPipeline:
@@ -32,15 +32,23 @@ class TrainingPipeline:
         return self.trainer.train_best_model(X, y)
 
     def save_best_model(self, model, path='models/best_model.pkl'):
+        import os
+        os.makedirs(os.path.dirname(path), exist_ok=True)
         self.trainer.save_model(model, path)
         print(f"Best model saved to {path}")
+
+    def save_features(self, path='features/match_trained_features.pkl'):
+        import os
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        self.trainer.save_model(self.trainer.feature, path)
+        print(f"Features saved to {path}")
 
     def run_pipeline(self):
         # Step 1: Load dataset
         feature_df = self.load_data()
 
         # Step 2: Prepare dataset
-        X, y, df = self.prepare_training_data(feature_df)
+        X, y, _ = self.prepare_training_data(feature_df)
 
         # Step 3: Train all models
         models_report = self.train_models(X, y)
@@ -58,6 +66,9 @@ class TrainingPipeline:
 
         # Step 6: Save best model
         self.save_best_model(best_model)
+
+        # Step 7: Save features
+        self.save_features()
 
         return {
             "best_model": best_model,
