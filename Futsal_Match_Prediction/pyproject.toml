@@ -12,4 +12,5 @@ dependencies = [
     "pydantic>=2.13.4",
     "scikit-learn>=1.8.0",
     "uvicorn>=0.47.0",
+    "xgboost>=2.1.0",
 ]

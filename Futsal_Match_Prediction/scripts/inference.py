@@ -1,81 +1,77 @@
 import joblib
-from typing import Optional, Union
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel
+from typing import List
 from components.data_transformation import DataTransformation
+from components.data_ingestion import DataIngestion
 import pandas as pd
 import numpy as np
+import glob
+import os
 
 class MatchInput(BaseModel):
-    homeTeam: Optional[str] = None
-    awayTeam: Optional[str] = None
-    homeID: Optional[int] = None
-    awayID: Optional[int] = None
+    homeID: int
+    awayID: int
 
-    @model_validator(mode="after")
-    def check_either_pair_exists(self) -> "MatchInput":
-        has_names = self.homeTeam is not None and self.awayTeam is not None
-        has_ids = self.homeID is not None and self.awayID is not None
-        if not (has_names or has_ids):
-            raise ValueError("Provide either both (homeTeam AND awayTeam) OR both (homeID AND awayID).")
-        return self
-
-class MatchOutputName(BaseModel):
-    homeTeam: str
-    awayTeam: str
-    prediction: str
-    confidence: float
-
-class MatchOutputID(BaseModel):
+class MatchOutput(BaseModel):
     homeID: int
     awayID: int
     prediction: str
     confidence: float
-    
+
+class PlayerPrediction(BaseModel):
+    playerName: str
+    playWellProbability: float
+    predictedPerfScore: float
+
+class MatchReportResponse(BaseModel):
+    homeTeam: str
+    awayTeam: str
+    homeWinProbability: float
+    awayWinProbability: float
+    predictedWinner: str
+    predictedBestPlayer: str
+    winningTeamPlayers: List[PlayerPrediction]
+
     
 class Inference:
     def __init__(self):
-        self.model_path = "models/best_model.pkl"
+        # Dynamically locate match classification model
+        match_models = glob.glob("models/*_matches_model.pkl")
+        if not match_models:
+            raise FileNotFoundError("No match prediction model file (*_matches_model.pkl) found in models/")
+        self.model_path = match_models[0]
         self.features_path = "features/match_trained_features.pkl"
+        
+        # Dynamically locate player regression model
+        player_models = glob.glob("models/*_players_model.pkl")
+        if not player_models:
+            raise FileNotFoundError("No player performance model file (*_players_model.pkl) found in models/")
+        self.player_model_path = player_models[0]
+        self.player_features_path = "features/player_trained_features.pkl"
+        
+        print(f"Loading best match model: {self.model_path}")
         self.model = self.load_model(self.model_path)
         self.features = self.load_model(self.features_path)
         
+        print(f"Loading best player model: {self.player_model_path}")
+        self.player_model = self.load_model(self.player_model_path)
+        self.player_features = self.load_model(self.player_features_path)
+        
         print("Initializing Inference State... (This may take a few seconds)")
         self.dt = DataTransformation()
-        self.dt.transform(save_csv=False)
+        raw_matches = DataIngestion().ingest_match_data()
+        self.dt.transform(raw_matches, save_csv=False)
         self.team_memory = self.dt.team_memory
         self.h2h_memory = self.dt.h2h_memory
-        
-        # Create mappings
-        raw_data = pd.read_csv("data/series-futsal-men-matches.csv")
-        self.name_to_id = dict(zip(raw_data['homeTeamName'].str.strip(), raw_data['homeTeamId']))
-        self.name_to_id.update(dict(zip(raw_data['awayTeamName'].str.strip(), raw_data['awayTeamId'])))
-        self.id_to_name = {v: k for k, v in self.name_to_id.items()}
         print("Inference State Ready!")
     
     def load_model(self, model_path: str):
-        import joblib
         return joblib.load(model_path)
 
-    def test_infer(self, data: MatchInput) -> Union[MatchOutputName, MatchOutputID]:
-        import pandas as pd
-        import numpy as np
-        
+    def test_match_infer(self, data: MatchInput) -> MatchOutput:
         # Resolve IDs
         home_id = data.homeID
         away_id = data.awayID
-        
-        if home_id is None or away_id is None:
-            home_id = self.name_to_id.get(data.homeTeam.strip() if data.homeTeam else None)
-            away_id = self.name_to_id.get(data.awayTeam.strip() if data.awayTeam else None)
-            
-            if home_id is None or away_id is None:
-                missing = []
-                if home_id is None: missing.append(f"Home team '{data.homeTeam}'")
-                if away_id is None: missing.append(f"Away team '{data.awayTeam}'")
-                raise ValueError(f"Could not find IDs for: {', '.join(missing)}")
-
-        home_name = self.id_to_name.get(home_id, f"ID_{home_id}")
-        away_name = self.id_to_name.get(away_id, f"ID_{away_id}")
         
         # Ensure memory exists
         self.dt.initialize_team_memory(home_id)
@@ -147,18 +143,134 @@ class Inference:
             confidence = float(np.max(probs))
             
         prediction_str = "Home Win" if prediction_num == 1 else "Away Win"
+        return MatchOutput(
+            homeID=home_id,
+            awayID=away_id,
+            prediction=prediction_str,
+            confidence=confidence
+        )
 
-        if data.homeID is not None and data.awayID is not None:
-            return MatchOutputID(
-                homeID=home_id,
-                awayID=away_id,
-                prediction=prediction_str,
-                confidence=confidence
-            )
+    def test_player_infer(self, match_pred: MatchOutput) -> MatchReportResponse:
+        # Extract team IDs
+        home_id = match_pred.homeID
+        away_id = match_pred.awayID
+
+        # Calculate win probabilities based on prediction outcome
+        if match_pred.prediction == "Home Win":
+            home_win_probability = round(match_pred.confidence * 100, 2)
+            away_win_probability = round(100.0 - home_win_probability, 2)
         else:
-            return MatchOutputName(
-                homeTeam=home_name,
-                awayTeam=away_name,
-                prediction=prediction_str,
-                confidence=confidence
+            away_win_probability = round(match_pred.confidence * 100, 2)
+            home_win_probability = round(100.0 - away_win_probability, 2)
+
+        # Load player feature dataset
+        historical_df = pd.read_csv("data/players_ml.csv")
+
+        # Process dates
+        historical_df['match_date'] = pd.to_datetime(
+            historical_df['match_date'],
+            errors='coerce'
+        )
+        historical_df = historical_df.sort_values('match_date')
+
+        # Clean player rows
+        historical_df = historical_df.dropna(subset=['user_id'])
+        historical_df = historical_df.drop_duplicates()
+
+        # Build dynamic clean team mapping
+        home_mapping = historical_df[['homeTeamId', 'homeTeamName']].copy().rename(
+            columns={'homeTeamId': 'team_id', 'homeTeamName': 'team_name'}
+        )
+        away_mapping = historical_df[['awayTeamId', 'awayTeamName']].copy().rename(
+            columns={'awayTeamId': 'team_id', 'awayTeamName': 'team_name'}
+        )
+        team_mapping = pd.concat([home_mapping, away_mapping], axis=0).dropna()
+
+        # Group by team_id and fetch most frequent team name
+        team_mapping = (
+            team_mapping
+            .groupby('team_id')['team_name']
+            .agg(lambda x: x.value_counts().index[0])
+            .reset_index()
+        )
+
+        # Resolve Team Names automatically
+        home_team_rows = team_mapping.loc[team_mapping['team_id'] == home_id, 'team_name']
+        away_team_rows = team_mapping.loc[team_mapping['team_id'] == away_id, 'team_name']
+
+        home_team_name = home_team_rows.iloc[0] if len(home_team_rows) > 0 else f"Home Team {home_id}"
+        away_team_name = away_team_rows.iloc[0] if len(away_team_rows) > 0 else f"Away Team {away_id}"
+
+        # Determine Winner dynamic details
+        winner_id = home_id if match_pred.prediction == "Home Win" else away_id
+        winner_team_name = home_team_name if match_pred.prediction == "Home Win" else away_team_name
+
+        # Retrieve recent active players for the predicted WINNING team only
+        latest_date = historical_df['match_date'].max()
+        recent_cutoff = latest_date - pd.Timedelta(days=120)
+
+        winning_players_df = historical_df[
+            (historical_df['team_id'] == winner_id) &
+            (historical_df['match_date'] >= recent_cutoff)
+        ].copy()
+
+        # Fallback if no players are active in past 120 days
+        if winning_players_df.empty:
+            winning_players_df = historical_df[historical_df['team_id'] == winner_id].copy()
+
+        # Keep the most recent record of each player
+        winning_players_df = winning_players_df.groupby('user_id').tail(1)
+
+        # Keep top 8 players of the winning team by recent performance score
+        winning_players_df = winning_players_df.sort_values('roll5_perf_score', ascending=False).head(8)
+
+        if 'player_name' not in winning_players_df.columns:
+            winning_players_df['player_name'] = (
+                winning_players_df['first_name'].fillna('')
+                + ' '
+                + winning_players_df['last_name'].fillna('')
+            ).str.strip()
+
+        # Keep valid features only
+        valid_features = [col for col in self.player_features if col in winning_players_df.columns]
+        winning_players_df[valid_features] = winning_players_df[valid_features].fillna(0)
+
+        # Scale predictions to play well probabilities
+        def convert_scores_to_probabilities(scores):
+            scores = np.array(scores)
+            if len(scores) == 0:
+                return scores
+            # Use Softmax to create distinct probability distribution
+            exp_scores = np.exp(scores - np.max(scores)) # shift for numerical stability
+            probs = exp_scores / exp_scores.sum()
+            return probs * 100
+
+        # Predict performance score
+        preds = self.player_model.predict(winning_players_df[valid_features])
+        winning_players_df['predicted_perf_score'] = preds
+        winning_players_df['play_well_probability'] = convert_scores_to_probabilities(preds).round(2)
+
+        # Sort player predictions
+        winning_players_df = winning_players_df.sort_values('play_well_probability', ascending=False)
+
+        # Build Response Player List for predicted winning team only
+        winning_players = []
+        for _, row in winning_players_df.iterrows():
+            player_pred = PlayerPrediction(
+                playerName=row['player_name'],
+                playWellProbability=float(row['play_well_probability']),
+                predictedPerfScore=float(round(row['predicted_perf_score'], 2))
             )
+            winning_players.append(player_pred)
+
+        predicted_best_player = winning_players[0].playerName if len(winning_players) > 0 else "N/A"
+
+        return MatchReportResponse(
+            homeTeam=home_team_name,
+            awayTeam=away_team_name,
+            homeWinProbability=home_win_probability,
+            awayWinProbability=away_win_probability,
+            predictedWinner=winner_team_name,
+            predictedBestPlayer=predicted_best_player,
+            winningTeamPlayers=winning_players
+        )

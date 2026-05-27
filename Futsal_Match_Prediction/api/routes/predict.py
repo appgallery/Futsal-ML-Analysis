@@ -2,10 +2,8 @@ import os
 import contextlib
 import hashlib
 import json
-from typing import Union
-
-from fastapi import APIRouter, Request, FastAPI, HTTPException, Depends
-from scripts.inference import Inference, MatchInput, MatchOutputName, MatchOutputID
+from fastapi import APIRouter, FastAPI, HTTPException, Depends
+from scripts.inference import Inference, MatchInput, MatchOutput, MatchReportResponse
 from pipeline.data_pipeline import DataPipeline
 from pipeline.training_pipeline import TrainingPipeline
 
@@ -20,7 +18,7 @@ def get_file_hash(filepath):
     hasher = hashlib.md5()
     with open(filepath, 'rb') as f:
         buf = f.read()
-        hasher.update(buf)
+    hasher.update(buf)
     return hasher.hexdigest()
 
 @contextlib.asynccontextmanager
@@ -56,9 +54,9 @@ async def lifespan(app: FastAPI):
         try:
             global inference_engine
             inference_engine = Inference()
-            print("Best model loaded successfully.")
+            print("Best models loaded successfully.")
         except FileNotFoundError:
-            print("Error: Best model not found. Cannot perform predictions.")
+            print("Error: Best model files not found. Cannot perform predictions.")
             
     except Exception as e:
         print(f"Error during model initialization: {e}")
@@ -67,27 +65,19 @@ async def lifespan(app: FastAPI):
     print("Shutting down Prediction service...")
 
 
-@routes.get("/predict", response_model=Union[MatchOutputName, MatchOutputID])
-def predict(request: Request):
+@routes.get("/predict", response_model=MatchReportResponse)
+def predict(homeID: int, awayID: int):
     if inference_engine is None:
         raise HTTPException(status_code=500, detail="Inference engine is not initialized")
 
     try:
-        if "homeTeam" in request.query_params and "awayTeam" in request.query_params:
-            return inference_engine.test_infer(
-                MatchInput(
-                    homeTeam=request.query_params.get("homeTeam"),
-                    awayTeam=request.query_params.get("awayTeam")
-                )
+        match_pred = inference_engine.test_match_infer(
+            MatchInput(
+                homeID=homeID,
+                awayID=awayID
             )
-        elif "homeID" in request.query_params and "awayID" in request.query_params:
-            return inference_engine.test_infer(
-                MatchInput(
-                    homeID=int(request.query_params.get("homeID")),
-                    awayID=int(request.query_params.get("awayID"))
-                )
-            )
-        else:
-            raise HTTPException(status_code=400, detail="Provide either homeTeam/awayTeam or homeID/awayID")
+        )
+        report = inference_engine.test_player_infer(match_pred)
+        return report
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
