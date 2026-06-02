@@ -260,13 +260,16 @@ class PlayerModelTrainer:
             print(f"TRAINING {name}")
             print("="*80)
 
+            # Avoid multiprocessing deadlock with XGBoost and joblib
+            n_jobs = 1 if name == "XGBoost" else -1
+
             grid = GridSearchCV(
                 estimator=model,
                 param_grid=self.params[name],
                 scoring='neg_mean_squared_error',
                 cv=3,
                 verbose=1,
-                n_jobs=-1
+                n_jobs=n_jobs
             )
 
             grid.fit(X_train, y_train)
@@ -310,11 +313,11 @@ class PlayerModelTrainer:
 
     def convert_scores_to_probabilities(self, scores):
         scores = np.array(scores)
-        if len(scores) == 0:
-            return scores
-        # Use Softmax to create distinct probability distribution
-        exp_scores = np.exp(scores - np.max(scores)) # shift for numerical stability
-        probs = exp_scores / exp_scores.sum()
+        # Remove negative values
+        scores = scores - scores.min()
+        # Prevent division by zero
+        scores = scores + 1
+        probs = scores / scores.sum()
         return probs * 100
 
     def predict_player_match_performance(self, model, player_df, feature_cols):

@@ -1,0 +1,34 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies needed for some Python packages (e.g., libgomp1 for XGBoost)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install python dependencies required by the application
+RUN pip install --no-cache-dir \
+    "fastapi>=0.136.1" \
+    "joblib>=1.5.3" \
+    "numpy>=1.26.0" \
+    "pandas<2.2" \
+    "pydantic>=2.13.4" \
+    "pymysql>=1.2.0" \
+    "scikit-learn>=1.3.0" \
+    "sqlalchemy<2.0" \
+    "uvicorn>=0.47.0" \
+    "xgboost>=2.1.0" \
+    "python-dotenv" \
+    "dill"
+
+# Copy the application code
+COPY . .
+
+# Set environment variable to detect when running inside Docker
+ENV IN_DOCKER=true
+
+EXPOSE 8000
+
+CMD ["python", "main.py"]

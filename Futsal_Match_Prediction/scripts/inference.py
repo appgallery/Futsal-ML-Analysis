@@ -240,9 +240,9 @@ class Inference:
             scores = np.array(scores)
             if len(scores) == 0:
                 return scores
-            # Use Softmax to create distinct probability distribution
-            exp_scores = np.exp(scores - np.max(scores)) # shift for numerical stability
-            probs = exp_scores / exp_scores.sum()
+            scores = scores - scores.min()
+            scores = scores + 1
+            probs = scores / scores.sum()
             return probs * 100
 
         # Predict performance score
