@@ -94,7 +94,7 @@ class MatchModelTrainer:
                         grid_params,
                         cv=3,
                         scoring="accuracy",
-                        n_jobs=-1
+                        n_jobs=1
                     )
                 ))
             elif classifier_name == "SVC":
@@ -109,7 +109,7 @@ class MatchModelTrainer:
                         grid_params,
                         cv=3,
                         scoring="accuracy",
-                        n_jobs=-1
+                        n_jobs=1
                     )
                 ))
             elif classifier_name == "LogisticRegression":
@@ -124,7 +124,7 @@ class MatchModelTrainer:
                         grid_params,
                         cv=3,
                         scoring="accuracy",
-                        n_jobs=-1
+                        n_jobs=1
                     )
                 ))
 
@@ -252,7 +252,7 @@ class PlayerModelTrainer:
             "GradientBoosting": GradientBoostingRegressor(random_state=42),
             "ExtraTrees": ExtraTreesRegressor(random_state=42),
             "RidgeRegression": Ridge(),
-            "XGBoost": XGBRegressor(random_state=42)
+            "XGBoost": XGBRegressor(random_state=42, n_jobs=1)
         }
 
         for name, model in regressors.items():
@@ -260,8 +260,8 @@ class PlayerModelTrainer:
             print(f"TRAINING {name}")
             print("="*80)
 
-            # Avoid multiprocessing deadlock with XGBoost and joblib
-            n_jobs = 1 if name == "XGBoost" else -1
+            # Use single process to avoid multiprocessing deadlock and high memory usage
+            n_jobs = 1
 
             grid = GridSearchCV(
                 estimator=model,

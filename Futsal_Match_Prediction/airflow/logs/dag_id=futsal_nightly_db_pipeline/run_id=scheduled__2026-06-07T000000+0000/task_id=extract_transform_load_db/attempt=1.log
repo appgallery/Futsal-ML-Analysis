@@ -1,0 +1,460 @@
+[2026-06-08T04:50:48.295+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-06-08T04:50:48.322+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: futsal_nightly_db_pipeline.extract_transform_load_db scheduled__2026-06-07T00:00:00+00:00 [queued]>
+[2026-06-08T04:50:48.330+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: futsal_nightly_db_pipeline.extract_transform_load_db scheduled__2026-06-07T00:00:00+00:00 [queued]>
+[2026-06-08T04:50:48.331+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 2
+[2026-06-08T04:50:48.343+0000] {taskinstance.py:2330} INFO - Executing <Task(PythonOperator): extract_transform_load_db> on 2026-06-07 00:00:00+00:00
+[2026-06-08T04:50:48.352+0000] {standard_task_runner.py:63} INFO - Started process 210 to run task
+[2026-06-08T04:50:48.355+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'futsal_nightly_db_pipeline', 'extract_transform_load_db', 'scheduled__2026-06-07T00:00:00+00:00', '--job-id', '65', '--raw', '--subdir', 'DAGS_FOLDER/futsal_pipeline.py', '--cfg-path', '/tmp/tmp5goso25e']
+[2026-06-08T04:50:48.358+0000] {standard_task_runner.py:91} INFO - Job 65: Subtask extract_transform_load_db
+[2026-06-08T04:50:48.415+0000] {task_command.py:426} INFO - Running <TaskInstance: futsal_nightly_db_pipeline.extract_transform_load_db scheduled__2026-06-07T00:00:00+00:00 [running]> on host 7b549fe50564
+[2026-06-08T04:50:48.502+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='futsal_admin' AIRFLOW_CTX_DAG_ID='futsal_nightly_db_pipeline' AIRFLOW_CTX_TASK_ID='extract_transform_load_db' AIRFLOW_CTX_EXECUTION_DATE='2026-06-07T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2026-06-07T00:00:00+00:00'
+[2026-06-08T04:50:48.503+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-06-08T04:50:48.539+0000] {logging_mixin.py:188} INFO - --- Running Match Data Pipeline ---
+[2026-06-08T04:50:49.418+0000] {logging_mixin.py:188} INFO - 
+--- Running Player Data Pipeline ---
+[2026-06-08T04:50:50.418+0000] {logging_mixin.py:188} INFO - Data ETL complete. Processed 424 matches.
+[2026-06-08T04:50:50.419+0000] {python.py:237} INFO - Done. Returned value was: None
+[2026-06-08T04:50:50.420+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-06-08T04:50:50.432+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=futsal_nightly_db_pipeline, task_id=extract_transform_load_db, run_id=scheduled__2026-06-07T00:00:00+00:00, execution_date=20260607T000000, start_date=20260608T045048, end_date=20260608T045050
+[2026-06-08T04:50:50.496+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 0
+[2026-06-08T04:50:50.519+0000] {taskinstance.py:3498} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2026-06-08T04:50:50.521+0000] {local_task_job_runner.py:222} INFO - ::endgroup::
+[2026-06-08T05:38:20.932+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-06-08T05:38:20.967+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: futsal_nightly_db_pipeline.extract_transform_load_db scheduled__2026-06-07T00:00:00+00:00 [queued]>
+[2026-06-08T05:38:20.976+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: futsal_nightly_db_pipeline.extract_transform_load_db scheduled__2026-06-07T00:00:00+00:00 [queued]>
+[2026-06-08T05:38:20.977+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 2
+[2026-06-08T05:38:21.002+0000] {taskinstance.py:2330} INFO - Executing <Task(PythonOperator): extract_transform_load_db> on 2026-06-07 00:00:00+00:00
+[2026-06-08T05:38:21.010+0000] {standard_task_runner.py:63} INFO - Started process 260 to run task
+[2026-06-08T05:38:21.016+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'futsal_nightly_db_pipeline', 'extract_transform_load_db', 'scheduled__2026-06-07T00:00:00+00:00', '--job-id', '2', '--raw', '--subdir', 'DAGS_FOLDER/futsal_pipeline.py', '--cfg-path', '/tmp/tmpil2_0r83']
+[2026-06-08T05:38:21.022+0000] {standard_task_runner.py:91} INFO - Job 2: Subtask extract_transform_load_db
+[2026-06-08T05:38:21.173+0000] {task_command.py:426} INFO - Running <TaskInstance: futsal_nightly_db_pipeline.extract_transform_load_db scheduled__2026-06-07T00:00:00+00:00 [running]> on host 4c238ab438e8
+[2026-06-08T05:38:21.397+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='futsal_admin' AIRFLOW_CTX_DAG_ID='futsal_nightly_db_pipeline' AIRFLOW_CTX_TASK_ID='extract_transform_load_db' AIRFLOW_CTX_EXECUTION_DATE='2026-06-07T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2026-06-07T00:00:00+00:00'
+[2026-06-08T05:38:21.403+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-06-08T05:38:21.551+0000] {logging_mixin.py:188} INFO - --- Running Match Data Pipeline ---
+[2026-06-08T05:38:21.656+0000] {logging_mixin.py:188} WARNING - Traceback (most recent call last):
+[2026-06-08T05:38:21.657+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context
+    self.dialect.do_execute(
+[2026-06-08T05:38:21.658+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+[2026-06-08T05:38:21.659+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/cursors.py", line 159, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:38:21.659+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/cursors.py", line 330, in _query
+    conn.query(q)
+[2026-06-08T05:38:21.660+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 582, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:38:21.661+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 847, in _read_query_result
+    result.read()
+[2026-06-08T05:38:21.661+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 1245, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:38:21.662+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 803, in _read_packet
+    packet.raise_for_error()
+[2026-06-08T05:38:21.663+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+[2026-06-08T05:38:21.663+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/err.py", line 154, in raise_mysql_exception
+    raise errorclass(errno, errval, sqlstate=sqlstate)
+[2026-06-08T05:38:21.664+0000] {logging_mixin.py:188} WARNING - pymysql.err.ProgrammingError: (1146, "Table '***_db.futsal_men_matches' doesn't exist")
+[2026-06-08T05:38:21.665+0000] {logging_mixin.py:188} WARNING - 
+The above exception was the direct cause of the following exception:
+[2026-06-08T05:38:21.665+0000] {logging_mixin.py:188} WARNING - Traceback (most recent call last):
+[2026-06-08T05:38:21.667+0000] {logging_mixin.py:188} WARNING -   File "/opt/***/pipeline/data_pipeline.py", line 13, in match_run_pipeline
+    matches = self.ingestion.ingest_match_data()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:38:21.668+0000] {logging_mixin.py:188} WARNING -   File "/opt/***/components/data_ingestion.py", line 45, in ingest_match_data
+    matches_raw = self.read_match_data()
+                  ^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:38:21.669+0000] {logging_mixin.py:188} WARNING -   File "/opt/***/components/data_ingestion.py", line 29, in read_match_data
+    return pd.read_sql("SELECT * FROM futsal_men_matches", self.engine)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:38:21.669+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/sql.py", line 682, in read_sql
+    return pandas_sql.read_query(
+           ^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:38:21.670+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/sql.py", line 1776, in read_query
+    result = self.execute(sql, params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:38:21.670+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/sql.py", line 1599, in execute
+    return self.con.exec_driver_sql(sql, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:38:21.671+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1770, in exec_driver_sql
+    return self._exec_driver_sql(
+           ^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:38:21.671+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1674, in _exec_driver_sql
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:38:21.672+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1953, in _execute_context
+    self._handle_dbapi_exception(
+[2026-06-08T05:38:21.672+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 2134, in _handle_dbapi_exception
+    util.raise_(
+[2026-06-08T05:38:21.673+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+[2026-06-08T05:38:21.675+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context
+    self.dialect.do_execute(
+[2026-06-08T05:38:21.675+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+[2026-06-08T05:38:21.676+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/cursors.py", line 159, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:38:21.676+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/cursors.py", line 330, in _query
+    conn.query(q)
+[2026-06-08T05:38:21.677+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 582, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:38:21.677+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 847, in _read_query_result
+    result.read()
+[2026-06-08T05:38:21.678+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 1245, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:38:21.678+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 803, in _read_packet
+    packet.raise_for_error()
+[2026-06-08T05:38:21.679+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+[2026-06-08T05:38:21.679+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/err.py", line 154, in raise_mysql_exception
+    raise errorclass(errno, errval, sqlstate=sqlstate)
+[2026-06-08T05:38:21.680+0000] {logging_mixin.py:188} WARNING - sqlalchemy.exc.ProgrammingError: (pymysql.err.ProgrammingError) (1146, "Table '***_db.futsal_men_matches' doesn't exist")
+[SQL: SELECT * FROM futsal_men_matches]
+(Background on this error at: https://sqlalche.me/e/14/f405)
+[2026-06-08T05:38:21.680+0000] {logging_mixin.py:188} INFO - 
+--- Running Player Data Pipeline ---
+[2026-06-08T05:38:21.690+0000] {logging_mixin.py:188} WARNING - Traceback (most recent call last):
+[2026-06-08T05:38:21.691+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context
+    self.dialect.do_execute(
+[2026-06-08T05:38:21.691+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+[2026-06-08T05:38:21.692+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/cursors.py", line 159, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:38:21.692+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/cursors.py", line 330, in _query
+    conn.query(q)
+[2026-06-08T05:38:21.694+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 582, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:38:21.695+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 847, in _read_query_result
+    result.read()
+[2026-06-08T05:38:21.695+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 1245, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:38:21.696+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 803, in _read_packet
+    packet.raise_for_error()
+[2026-06-08T05:38:21.696+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+[2026-06-08T05:38:21.696+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/err.py", line 154, in raise_mysql_exception
+    raise errorclass(errno, errval, sqlstate=sqlstate)
+[2026-06-08T05:38:21.697+0000] {logging_mixin.py:188} WARNING - pymysql.err.ProgrammingError: (1146, "Table '***_db.futsal_men_matches' doesn't exist")
+[2026-06-08T05:38:21.697+0000] {logging_mixin.py:188} WARNING - 
+The above exception was the direct cause of the following exception:
+[2026-06-08T05:38:21.698+0000] {logging_mixin.py:188} WARNING - Traceback (most recent call last):
+[2026-06-08T05:38:21.700+0000] {logging_mixin.py:188} WARNING -   File "/opt/***/pipeline/data_pipeline.py", line 27, in player_run_pipeline
+    matches = self.ingestion.ingest_match_data()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:38:21.701+0000] {logging_mixin.py:188} WARNING -   File "/opt/***/components/data_ingestion.py", line 45, in ingest_match_data
+    matches_raw = self.read_match_data()
+                  ^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:38:21.702+0000] {logging_mixin.py:188} WARNING -   File "/opt/***/components/data_ingestion.py", line 29, in read_match_data
+    return pd.read_sql("SELECT * FROM futsal_men_matches", self.engine)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:38:21.702+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/sql.py", line 682, in read_sql
+    return pandas_sql.read_query(
+           ^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:38:21.703+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/sql.py", line 1776, in read_query
+    result = self.execute(sql, params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:38:21.703+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/sql.py", line 1599, in execute
+    return self.con.exec_driver_sql(sql, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:38:21.704+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1770, in exec_driver_sql
+    return self._exec_driver_sql(
+           ^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:38:21.704+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1674, in _exec_driver_sql
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:38:21.705+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1953, in _execute_context
+    self._handle_dbapi_exception(
+[2026-06-08T05:38:21.705+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 2134, in _handle_dbapi_exception
+    util.raise_(
+[2026-06-08T05:38:21.707+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+[2026-06-08T05:38:21.707+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context
+    self.dialect.do_execute(
+[2026-06-08T05:38:21.708+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+[2026-06-08T05:38:21.708+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/cursors.py", line 159, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:38:21.709+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/cursors.py", line 330, in _query
+    conn.query(q)
+[2026-06-08T05:38:21.709+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 582, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:38:21.710+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 847, in _read_query_result
+    result.read()
+[2026-06-08T05:38:21.710+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 1245, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:38:21.711+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 803, in _read_packet
+    packet.raise_for_error()
+[2026-06-08T05:38:21.711+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+[2026-06-08T05:38:21.712+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/err.py", line 154, in raise_mysql_exception
+    raise errorclass(errno, errval, sqlstate=sqlstate)
+[2026-06-08T05:38:21.712+0000] {logging_mixin.py:188} WARNING - sqlalchemy.exc.ProgrammingError: (pymysql.err.ProgrammingError) (1146, "Table '***_db.futsal_men_matches' doesn't exist")
+[SQL: SELECT * FROM futsal_men_matches]
+(Background on this error at: https://sqlalche.me/e/14/f405)
+[2026-06-08T05:38:21.713+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-06-08T05:38:21.714+0000] {taskinstance.py:2905} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 465, in _execute_task
+    result = _execute_callable(context=context, **execute_callable_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 432, in _execute_callable
+    return execute_callable(context=context, **execute_callable_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/baseoperator.py", line 400, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/python.py", line 235, in execute
+    return_value = self.execute_callable()
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/python.py", line 252, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/airflow/dags/futsal_pipeline.py", line 24, in run_data_etl
+    print(f"Data ETL complete. Processed {len(matches)} matches.")
+                                          ^^^^^^^^^^^^
+TypeError: object of type 'NoneType' has no len()
+[2026-06-08T05:38:21.735+0000] {taskinstance.py:1206} INFO - Marking task as UP_FOR_RETRY. dag_id=futsal_nightly_db_pipeline, task_id=extract_transform_load_db, run_id=scheduled__2026-06-07T00:00:00+00:00, execution_date=20260607T000000, start_date=20260608T053820, end_date=20260608T053821
+[2026-06-08T05:38:21.762+0000] {standard_task_runner.py:110} ERROR - Failed to execute job 2 for task extract_transform_load_db (object of type 'NoneType' has no len(); 260)
+[2026-06-08T05:38:21.796+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 1
+[2026-06-08T05:38:21.827+0000] {taskinstance.py:3498} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2026-06-08T05:38:21.829+0000] {local_task_job_runner.py:222} INFO - ::endgroup::
+[2026-06-08T05:53:18.888+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-06-08T05:53:18.916+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: futsal_nightly_db_pipeline.extract_transform_load_db scheduled__2026-06-07T00:00:00+00:00 [queued]>
+[2026-06-08T05:53:18.924+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: futsal_nightly_db_pipeline.extract_transform_load_db scheduled__2026-06-07T00:00:00+00:00 [queued]>
+[2026-06-08T05:53:18.925+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 2
+[2026-06-08T05:53:18.937+0000] {taskinstance.py:2330} INFO - Executing <Task(PythonOperator): extract_transform_load_db> on 2026-06-07 00:00:00+00:00
+[2026-06-08T05:53:18.945+0000] {standard_task_runner.py:63} INFO - Started process 287 to run task
+[2026-06-08T05:53:18.949+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'futsal_nightly_db_pipeline', 'extract_transform_load_db', 'scheduled__2026-06-07T00:00:00+00:00', '--job-id', '2', '--raw', '--subdir', 'DAGS_FOLDER/futsal_pipeline.py', '--cfg-path', '/tmp/tmp0yx_f1nd']
+[2026-06-08T05:53:18.952+0000] {standard_task_runner.py:91} INFO - Job 2: Subtask extract_transform_load_db
+[2026-06-08T05:53:19.030+0000] {task_command.py:426} INFO - Running <TaskInstance: futsal_nightly_db_pipeline.extract_transform_load_db scheduled__2026-06-07T00:00:00+00:00 [running]> on host 5bf0295caea2
+[2026-06-08T05:53:19.132+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='futsal_admin' AIRFLOW_CTX_DAG_ID='futsal_nightly_db_pipeline' AIRFLOW_CTX_TASK_ID='extract_transform_load_db' AIRFLOW_CTX_EXECUTION_DATE='2026-06-07T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2026-06-07T00:00:00+00:00'
+[2026-06-08T05:53:19.133+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-06-08T05:53:19.169+0000] {logging_mixin.py:188} INFO - --- Running Match Data Pipeline ---
+[2026-06-08T05:53:19.236+0000] {logging_mixin.py:188} WARNING - Traceback (most recent call last):
+[2026-06-08T05:53:19.238+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context
+    self.dialect.do_execute(
+[2026-06-08T05:53:19.238+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+[2026-06-08T05:53:19.239+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/cursors.py", line 159, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:53:19.239+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/cursors.py", line 330, in _query
+    conn.query(q)
+[2026-06-08T05:53:19.240+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 582, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:53:19.240+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 847, in _read_query_result
+    result.read()
+[2026-06-08T05:53:19.240+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 1245, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:53:19.241+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 803, in _read_packet
+    packet.raise_for_error()
+[2026-06-08T05:53:19.241+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+[2026-06-08T05:53:19.242+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/err.py", line 154, in raise_mysql_exception
+    raise errorclass(errno, errval, sqlstate=sqlstate)
+[2026-06-08T05:53:19.242+0000] {logging_mixin.py:188} WARNING - pymysql.err.ProgrammingError: (1146, "Table '***_db.futsal_men_matches' doesn't exist")
+[2026-06-08T05:53:19.242+0000] {logging_mixin.py:188} WARNING - 
+The above exception was the direct cause of the following exception:
+[2026-06-08T05:53:19.243+0000] {logging_mixin.py:188} WARNING - Traceback (most recent call last):
+[2026-06-08T05:53:19.244+0000] {logging_mixin.py:188} WARNING -   File "/opt/***/pipeline/data_pipeline.py", line 13, in match_run_pipeline
+    matches = self.ingestion.ingest_match_data()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:53:19.244+0000] {logging_mixin.py:188} WARNING -   File "/opt/***/components/data_ingestion.py", line 45, in ingest_match_data
+    matches_raw = self.read_match_data()
+                  ^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:53:19.244+0000] {logging_mixin.py:188} WARNING -   File "/opt/***/components/data_ingestion.py", line 29, in read_match_data
+    return pd.read_sql("SELECT * FROM futsal_men_matches", self.engine)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:53:19.245+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/sql.py", line 682, in read_sql
+    return pandas_sql.read_query(
+           ^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:53:19.245+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/sql.py", line 1776, in read_query
+    result = self.execute(sql, params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:53:19.246+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/sql.py", line 1599, in execute
+    return self.con.exec_driver_sql(sql, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:53:19.246+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1770, in exec_driver_sql
+    return self._exec_driver_sql(
+           ^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:53:19.246+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1674, in _exec_driver_sql
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:53:19.247+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1953, in _execute_context
+    self._handle_dbapi_exception(
+[2026-06-08T05:53:19.247+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 2134, in _handle_dbapi_exception
+    util.raise_(
+[2026-06-08T05:53:19.248+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+[2026-06-08T05:53:19.248+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context
+    self.dialect.do_execute(
+[2026-06-08T05:53:19.248+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+[2026-06-08T05:53:19.249+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/cursors.py", line 159, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:53:19.249+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/cursors.py", line 330, in _query
+    conn.query(q)
+[2026-06-08T05:53:19.250+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 582, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:53:19.250+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 847, in _read_query_result
+    result.read()
+[2026-06-08T05:53:19.250+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 1245, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:53:19.251+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 803, in _read_packet
+    packet.raise_for_error()
+[2026-06-08T05:53:19.251+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+[2026-06-08T05:53:19.251+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/err.py", line 154, in raise_mysql_exception
+    raise errorclass(errno, errval, sqlstate=sqlstate)
+[2026-06-08T05:53:19.252+0000] {logging_mixin.py:188} WARNING - sqlalchemy.exc.ProgrammingError: (pymysql.err.ProgrammingError) (1146, "Table '***_db.futsal_men_matches' doesn't exist")
+[SQL: SELECT * FROM futsal_men_matches]
+(Background on this error at: https://sqlalche.me/e/14/f405)
+[2026-06-08T05:53:19.252+0000] {logging_mixin.py:188} INFO - 
+--- Running Player Data Pipeline ---
+[2026-06-08T05:53:19.259+0000] {logging_mixin.py:188} WARNING - Traceback (most recent call last):
+[2026-06-08T05:53:19.260+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context
+    self.dialect.do_execute(
+[2026-06-08T05:53:19.260+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+[2026-06-08T05:53:19.260+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/cursors.py", line 159, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:53:19.261+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/cursors.py", line 330, in _query
+    conn.query(q)
+[2026-06-08T05:53:19.261+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 582, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:53:19.262+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 847, in _read_query_result
+    result.read()
+[2026-06-08T05:53:19.262+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 1245, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:53:19.262+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 803, in _read_packet
+    packet.raise_for_error()
+[2026-06-08T05:53:19.263+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+[2026-06-08T05:53:19.263+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/err.py", line 154, in raise_mysql_exception
+    raise errorclass(errno, errval, sqlstate=sqlstate)
+[2026-06-08T05:53:19.263+0000] {logging_mixin.py:188} WARNING - pymysql.err.ProgrammingError: (1146, "Table '***_db.futsal_men_matches' doesn't exist")
+[2026-06-08T05:53:19.264+0000] {logging_mixin.py:188} WARNING - 
+The above exception was the direct cause of the following exception:
+[2026-06-08T05:53:19.264+0000] {logging_mixin.py:188} WARNING - Traceback (most recent call last):
+[2026-06-08T05:53:19.265+0000] {logging_mixin.py:188} WARNING -   File "/opt/***/pipeline/data_pipeline.py", line 27, in player_run_pipeline
+    matches = self.ingestion.ingest_match_data()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:53:19.265+0000] {logging_mixin.py:188} WARNING -   File "/opt/***/components/data_ingestion.py", line 45, in ingest_match_data
+    matches_raw = self.read_match_data()
+                  ^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:53:19.265+0000] {logging_mixin.py:188} WARNING -   File "/opt/***/components/data_ingestion.py", line 29, in read_match_data
+    return pd.read_sql("SELECT * FROM futsal_men_matches", self.engine)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:53:19.266+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/sql.py", line 682, in read_sql
+    return pandas_sql.read_query(
+           ^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:53:19.266+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/sql.py", line 1776, in read_query
+    result = self.execute(sql, params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:53:19.266+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/sql.py", line 1599, in execute
+    return self.con.exec_driver_sql(sql, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:53:19.267+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1770, in exec_driver_sql
+    return self._exec_driver_sql(
+           ^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:53:19.267+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1674, in _exec_driver_sql
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:53:19.267+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1953, in _execute_context
+    self._handle_dbapi_exception(
+[2026-06-08T05:53:19.268+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 2134, in _handle_dbapi_exception
+    util.raise_(
+[2026-06-08T05:53:19.268+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+[2026-06-08T05:53:19.269+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context
+    self.dialect.do_execute(
+[2026-06-08T05:53:19.269+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+[2026-06-08T05:53:19.269+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/cursors.py", line 159, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:53:19.270+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/cursors.py", line 330, in _query
+    conn.query(q)
+[2026-06-08T05:53:19.270+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 582, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:53:19.271+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 847, in _read_query_result
+    result.read()
+[2026-06-08T05:53:19.271+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 1245, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-08T05:53:19.272+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/connections.py", line 803, in _read_packet
+    packet.raise_for_error()
+[2026-06-08T05:53:19.272+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+[2026-06-08T05:53:19.272+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pymysql/err.py", line 154, in raise_mysql_exception
+    raise errorclass(errno, errval, sqlstate=sqlstate)
+[2026-06-08T05:53:19.273+0000] {logging_mixin.py:188} WARNING - sqlalchemy.exc.ProgrammingError: (pymysql.err.ProgrammingError) (1146, "Table '***_db.futsal_men_matches' doesn't exist")
+[SQL: SELECT * FROM futsal_men_matches]
+(Background on this error at: https://sqlalche.me/e/14/f405)
+[2026-06-08T05:53:19.273+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-06-08T05:53:19.274+0000] {taskinstance.py:2905} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 465, in _execute_task
+    result = _execute_callable(context=context, **execute_callable_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 432, in _execute_callable
+    return execute_callable(context=context, **execute_callable_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/baseoperator.py", line 400, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/python.py", line 235, in execute
+    return_value = self.execute_callable()
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/python.py", line 252, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/airflow/dags/futsal_pipeline.py", line 24, in run_data_etl
+    print(f"Data ETL complete. Processed {len(matches)} matches.")
+                                          ^^^^^^^^^^^^
+TypeError: object of type 'NoneType' has no len()
+[2026-06-08T05:53:19.286+0000] {taskinstance.py:1206} INFO - Marking task as UP_FOR_RETRY. dag_id=futsal_nightly_db_pipeline, task_id=extract_transform_load_db, run_id=scheduled__2026-06-07T00:00:00+00:00, execution_date=20260607T000000, start_date=20260608T055318, end_date=20260608T055319
+[2026-06-08T05:53:19.308+0000] {standard_task_runner.py:110} ERROR - Failed to execute job 2 for task extract_transform_load_db (object of type 'NoneType' has no len(); 287)
+[2026-06-08T05:53:19.323+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 1
+[2026-06-08T05:53:19.344+0000] {taskinstance.py:3498} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2026-06-08T05:53:19.346+0000] {local_task_job_runner.py:222} INFO - ::endgroup::
+[2026-06-08T06:18:09.060+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-06-08T06:18:09.092+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: futsal_nightly_db_pipeline.extract_transform_load_db scheduled__2026-06-07T00:00:00+00:00 [queued]>
+[2026-06-08T06:18:09.100+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: futsal_nightly_db_pipeline.extract_transform_load_db scheduled__2026-06-07T00:00:00+00:00 [queued]>
+[2026-06-08T06:18:09.100+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 2
+[2026-06-08T06:18:09.123+0000] {taskinstance.py:2330} INFO - Executing <Task(PythonOperator): extract_transform_load_db> on 2026-06-07 00:00:00+00:00
+[2026-06-08T06:18:09.131+0000] {standard_task_runner.py:63} INFO - Started process 898 to run task
+[2026-06-08T06:18:09.134+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'futsal_nightly_db_pipeline', 'extract_transform_load_db', 'scheduled__2026-06-07T00:00:00+00:00', '--job-id', '13', '--raw', '--subdir', 'DAGS_FOLDER/futsal_pipeline.py', '--cfg-path', '/tmp/tmp4v0eviy5']
+[2026-06-08T06:18:09.138+0000] {standard_task_runner.py:91} INFO - Job 13: Subtask extract_transform_load_db
+[2026-06-08T06:18:09.232+0000] {task_command.py:426} INFO - Running <TaskInstance: futsal_nightly_db_pipeline.extract_transform_load_db scheduled__2026-06-07T00:00:00+00:00 [running]> on host fa52a7b82227
+[2026-06-08T06:18:09.334+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='futsal_admin' AIRFLOW_CTX_DAG_ID='futsal_nightly_db_pipeline' AIRFLOW_CTX_TASK_ID='extract_transform_load_db' AIRFLOW_CTX_EXECUTION_DATE='2026-06-07T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2026-06-07T00:00:00+00:00'
+[2026-06-08T06:18:09.336+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-06-08T06:18:09.359+0000] {logging_mixin.py:188} INFO - --- Running Match Data Pipeline ---
+[2026-06-08T06:18:10.215+0000] {logging_mixin.py:188} INFO - 
+--- Running Player Data Pipeline ---
+[2026-06-08T06:18:11.015+0000] {logging_mixin.py:188} INFO - Data ETL complete. Processed 424 matches.
+[2026-06-08T06:18:11.016+0000] {python.py:237} INFO - Done. Returned value was: None
+[2026-06-08T06:18:11.017+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-06-08T06:18:11.026+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=futsal_nightly_db_pipeline, task_id=extract_transform_load_db, run_id=scheduled__2026-06-07T00:00:00+00:00, execution_date=20260607T000000, start_date=20260608T061809, end_date=20260608T061811
+[2026-06-08T06:18:11.075+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 0
+[2026-06-08T06:18:11.095+0000] {taskinstance.py:3498} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2026-06-08T06:18:11.097+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

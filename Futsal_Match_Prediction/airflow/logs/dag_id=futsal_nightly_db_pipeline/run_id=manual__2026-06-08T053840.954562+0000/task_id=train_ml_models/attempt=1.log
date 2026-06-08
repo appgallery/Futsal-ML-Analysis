@@ -1,0 +1,167 @@
+[2026-06-08T05:40:32.863+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-06-08T05:40:32.900+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: futsal_nightly_db_pipeline.train_ml_models manual__2026-06-08T05:38:40.954562+00:00 [queued]>
+[2026-06-08T05:40:32.909+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: futsal_nightly_db_pipeline.train_ml_models manual__2026-06-08T05:38:40.954562+00:00 [queued]>
+[2026-06-08T05:40:32.910+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 2
+[2026-06-08T05:40:32.929+0000] {taskinstance.py:2330} INFO - Executing <Task(PythonOperator): train_ml_models> on 2026-06-08 05:38:40.954562+00:00
+[2026-06-08T05:40:32.939+0000] {standard_task_runner.py:63} INFO - Started process 407 to run task
+[2026-06-08T05:40:32.944+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'futsal_nightly_db_pipeline', 'train_ml_models', 'manual__2026-06-08T05:38:40.954562+00:00', '--job-id', '5', '--raw', '--subdir', 'DAGS_FOLDER/futsal_pipeline.py', '--cfg-path', '/tmp/tmptbt794sr']
+[2026-06-08T05:40:32.947+0000] {standard_task_runner.py:91} INFO - Job 5: Subtask train_ml_models
+[2026-06-08T05:40:33.035+0000] {task_command.py:426} INFO - Running <TaskInstance: futsal_nightly_db_pipeline.train_ml_models manual__2026-06-08T05:38:40.954562+00:00 [running]> on host 4c238ab438e8
+[2026-06-08T05:40:33.143+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='futsal_admin' AIRFLOW_CTX_DAG_ID='futsal_nightly_db_pipeline' AIRFLOW_CTX_TASK_ID='train_ml_models' AIRFLOW_CTX_EXECUTION_DATE='2026-06-08T05:38:40.954562+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-06-08T05:38:40.954562+00:00'
+[2026-06-08T05:40:33.145+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-06-08T05:40:33.165+0000] {logging_mixin.py:188} INFO - 
+=======================================================
+[2026-06-08T05:40:33.165+0000] {logging_mixin.py:188} INFO - RUNNING MATCH DATA MODEL TRAINING PIPELINE
+[2026-06-08T05:40:33.166+0000] {logging_mixin.py:188} INFO - =======================================================
+[2026-06-08T05:40:33.166+0000] {logging_mixin.py:188} INFO - Loading match feature data...
+[2026-06-08T05:40:33.187+0000] {logging_mixin.py:188} INFO - Training match models...
+[2026-06-08T05:40:33.189+0000] {logging_mixin.py:188} INFO - Grid searching: RandomForestClassifier...
+[2026-06-08T05:40:33.191+0000] {logging_mixin.py:188} INFO - Grid searching: SVC...
+[2026-06-08T05:40:33.192+0000] {logging_mixin.py:188} INFO - Grid searching: LogisticRegression...
+[2026-06-08T05:40:33.192+0000] {logging_mixin.py:188} INFO - Training RandomForestClassifier...
+[2026-06-08T05:42:01.252+0000] {logging_mixin.py:188} INFO - Training SVC...
+[2026-06-08T05:42:01.547+0000] {logging_mixin.py:188} INFO - Training LogisticRegression...
+[2026-06-08T05:42:01.999+0000] {logging_mixin.py:188} INFO - 
+==================================================
+[2026-06-08T05:42:02.004+0000] {logging_mixin.py:188} INFO - Match Training Report:
+[2026-06-08T05:42:02.006+0000] {logging_mixin.py:188} INFO - ==================================================
+[2026-06-08T05:42:02.009+0000] {logging_mixin.py:188} INFO - Model: RandomForestClassifier
+[2026-06-08T05:42:02.013+0000] {logging_mixin.py:188} INFO - Accuracy: 0.7059
+[2026-06-08T05:42:02.013+0000] {logging_mixin.py:188} INFO - F1-Score: 0.7062
+[2026-06-08T05:42:02.014+0000] {logging_mixin.py:188} INFO - Best Params: {'classifier__max_depth': 20, 'classifier__min_samples_leaf': 4, 'classifier__min_samples_split': 2, 'classifier__n_estimators': 100}
+[2026-06-08T05:42:02.020+0000] {logging_mixin.py:188} INFO - --------------------------------------------------
+[2026-06-08T05:42:02.021+0000] {logging_mixin.py:188} INFO - Model: SVC
+[2026-06-08T05:42:02.022+0000] {logging_mixin.py:188} INFO - Accuracy: 0.7176
+[2026-06-08T05:42:02.023+0000] {logging_mixin.py:188} INFO - F1-Score: 0.7184
+[2026-06-08T05:42:02.024+0000] {logging_mixin.py:188} INFO - Best Params: {'classifier__C': 0.1, 'classifier__kernel': 'linear'}
+[2026-06-08T05:42:02.025+0000] {logging_mixin.py:188} INFO - --------------------------------------------------
+[2026-06-08T05:42:02.026+0000] {logging_mixin.py:188} INFO - Model: LogisticRegression
+[2026-06-08T05:42:02.026+0000] {logging_mixin.py:188} INFO - Accuracy: 0.6941
+[2026-06-08T05:42:02.027+0000] {logging_mixin.py:188} INFO - F1-Score: 0.6949
+[2026-06-08T05:42:02.027+0000] {logging_mixin.py:188} INFO - Best Params: {'classifier__C': 0.1}
+[2026-06-08T05:42:02.028+0000] {logging_mixin.py:188} INFO - --------------------------------------------------
+[2026-06-08T05:42:02.095+0000] {logging_mixin.py:188} INFO - 
+Best match model name: SVC
+[2026-06-08T05:42:02.100+0000] {logging_mixin.py:188} INFO - Best match model type: <class 'sklearn.pipeline.Pipeline'>
+[2026-06-08T05:42:02.171+0000] {logging_mixin.py:188} INFO - Best match model (architecture-specific) saved to models/SVC_matches_model.pkl
+[2026-06-08T05:42:02.178+0000] {logging_mixin.py:188} INFO - Match features saved to features/match_trained_features.pkl
+[2026-06-08T05:42:02.179+0000] {logging_mixin.py:188} INFO - 
+=======================================================
+[2026-06-08T05:42:02.180+0000] {logging_mixin.py:188} INFO - RUNNING PLAYER DATA MODEL TRAINING PIPELINE
+[2026-06-08T05:42:02.181+0000] {logging_mixin.py:188} INFO - =======================================================
+[2026-06-08T05:42:02.181+0000] {logging_mixin.py:188} INFO - Loading player feature data...
+[2026-06-08T05:42:02.243+0000] {logging_mixin.py:188} INFO - Training player models...
+[2026-06-08T05:42:02.245+0000] {logging_mixin.py:188} INFO - 
+================================================================================
+[2026-06-08T05:42:02.246+0000] {logging_mixin.py:188} INFO - TRAINING RandomForest
+[2026-06-08T05:42:02.246+0000] {logging_mixin.py:188} INFO - ================================================================================
+[2026-06-08T05:42:02.248+0000] {logging_mixin.py:188} INFO - Fitting 3 folds for each of 24 candidates, totalling 72 fits
+[2026-06-08T05:43:37.871+0000] {logging_mixin.py:188} INFO - BEST PARAMETERS FOR RandomForest: {'max_depth': 3, 'min_samples_leaf': 2, 'min_samples_split': 2, 'n_estimators': 200}
+[2026-06-08T05:43:37.916+0000] {logging_mixin.py:188} INFO - RESULTS FOR RandomForest: MAE: 3.3286, RMSE: 4.7092, R2: -0.0429
+[2026-06-08T05:43:37.916+0000] {logging_mixin.py:188} INFO - 
+================================================================================
+[2026-06-08T05:43:37.917+0000] {logging_mixin.py:188} INFO - TRAINING GradientBoosting
+[2026-06-08T05:43:37.917+0000] {logging_mixin.py:188} INFO - ================================================================================
+[2026-06-08T05:43:37.919+0000] {logging_mixin.py:188} INFO - Fitting 3 folds for each of 12 candidates, totalling 36 fits
+[2026-06-08T05:44:23.067+0000] {logging_mixin.py:188} INFO - BEST PARAMETERS FOR GradientBoosting: {'learning_rate': 0.03, 'max_depth': 3, 'n_estimators': 100}
+[2026-06-08T05:44:23.072+0000] {logging_mixin.py:188} INFO - RESULTS FOR GradientBoosting: MAE: 3.3465, RMSE: 4.7402, R2: -0.0567
+[2026-06-08T05:44:23.073+0000] {logging_mixin.py:188} INFO - 
+================================================================================
+[2026-06-08T05:44:23.073+0000] {logging_mixin.py:188} INFO - TRAINING ExtraTrees
+[2026-06-08T05:44:23.074+0000] {logging_mixin.py:188} INFO - ================================================================================
+[2026-06-08T05:44:23.075+0000] {logging_mixin.py:188} INFO - Fitting 3 folds for each of 8 candidates, totalling 24 fits
+[2026-06-08T05:44:34.558+0000] {logging_mixin.py:188} INFO - BEST PARAMETERS FOR ExtraTrees: {'max_depth': 5, 'min_samples_split': 2, 'n_estimators': 100}
+[2026-06-08T05:44:34.583+0000] {logging_mixin.py:188} INFO - RESULTS FOR ExtraTrees: MAE: 3.3024, RMSE: 4.6988, R2: -0.0383
+[2026-06-08T05:44:34.584+0000] {logging_mixin.py:188} INFO - 
+================================================================================
+[2026-06-08T05:44:34.584+0000] {logging_mixin.py:188} INFO - TRAINING RidgeRegression
+[2026-06-08T05:44:34.585+0000] {logging_mixin.py:188} INFO - ================================================================================
+[2026-06-08T05:44:34.586+0000] {logging_mixin.py:188} INFO - Fitting 3 folds for each of 3 candidates, totalling 9 fits
+[2026-06-08T05:44:34.725+0000] {logging_mixin.py:188} INFO - BEST PARAMETERS FOR RidgeRegression: {'alpha': 10.0}
+[2026-06-08T05:44:34.729+0000] {logging_mixin.py:188} INFO - RESULTS FOR RidgeRegression: MAE: 3.313, RMSE: 4.6744, R2: -0.0276
+[2026-06-08T05:44:34.730+0000] {logging_mixin.py:188} INFO - 
+================================================================================
+[2026-06-08T05:44:34.731+0000] {logging_mixin.py:188} INFO - TRAINING XGBoost
+[2026-06-08T05:44:34.731+0000] {logging_mixin.py:188} INFO - ================================================================================
+[2026-06-08T05:44:34.735+0000] {logging_mixin.py:188} INFO - Fitting 3 folds for each of 12 candidates, totalling 36 fits
+[2026-06-08T05:47:28.305+0000] {local_task_job_runner.py:310} WARNING - State of this instance has been externally set to restarting. Terminating instance.
+[2026-06-08T05:47:28.307+0000] {local_task_job_runner.py:222} INFO - ::endgroup::
+[2026-06-08T05:47:28.309+0000] {process_utils.py:132} INFO - Sending 15 to group 407. PIDs of all processes in the group: [407]
+[2026-06-08T05:47:28.314+0000] {process_utils.py:87} INFO - Sending the signal 15 to group 407
+[2026-06-08T05:47:28.490+0000] {taskinstance.py:2611} ERROR - Received SIGTERM. Terminating subprocesses.
+[2026-06-08T05:47:28.492+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-06-08T05:47:28.514+0000] {taskinstance.py:2905} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 465, in _execute_task
+    result = _execute_callable(context=context, **execute_callable_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 432, in _execute_callable
+    return execute_callable(context=context, **execute_callable_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/baseoperator.py", line 400, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/python.py", line 235, in execute
+    return_value = self.execute_callable()
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/python.py", line 252, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/airflow/dags/futsal_pipeline.py", line 29, in run_model_training
+    pipeline.run_pipeline()
+  File "/opt/airflow/pipeline/training_pipeline.py", line 191, in run_pipeline
+    player_results = self.player_pipeline.run_pipeline()
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/airflow/pipeline/training_pipeline.py", line 149, in run_pipeline
+    models_report = self.train_models(X, y)
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/airflow/pipeline/training_pipeline.py", line 105, in train_models
+    return self.trainer.train(X, y)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/airflow/scripts/model_trainer.py", line 357, in train
+    return self.trainer.train(X, y)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/airflow/scripts/model_trainer.py", line 275, in train
+    grid.fit(X_train, y_train)
+  File "/home/airflow/.local/lib/python3.11/site-packages/sklearn/base.py", line 1336, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/sklearn/model_selection/_search.py", line 1053, in fit
+    self._run_search(evaluate_candidates)
+  File "/home/airflow/.local/lib/python3.11/site-packages/sklearn/model_selection/_search.py", line 1612, in _run_search
+    evaluate_candidates(ParameterGrid(self.param_grid))
+  File "/home/airflow/.local/lib/python3.11/site-packages/sklearn/model_selection/_search.py", line 999, in evaluate_candidates
+    out = parallel(
+          ^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/sklearn/utils/parallel.py", line 91, in __call__
+    return super().__call__(iterable_with_config_and_warning_filters)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/joblib/parallel.py", line 1986, in __call__
+    return output if self.return_generator else list(output)
+                                                ^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/joblib/parallel.py", line 1914, in _get_sequential_output
+    res = func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/sklearn/utils/parallel.py", line 184, in __call__
+    return self.function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/sklearn/model_selection/_validation.py", line 833, in _fit_and_score
+    estimator.fit(X_train, y_train, **fit_params)
+  File "/home/airflow/.local/lib/python3.11/site-packages/xgboost/core.py", line 751, in inner_f
+    return func(**kwargs)
+           ^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/xgboost/sklearn.py", line 1368, in fit
+    self._Booster = train(
+                    ^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/xgboost/core.py", line 751, in inner_f
+    return func(**kwargs)
+           ^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/xgboost/training.py", line 200, in train
+    bst.update(dtrain, iteration=i, fobj=obj)
+  File "/home/airflow/.local/lib/python3.11/site-packages/xgboost/core.py", line 2391, in update
+    _LIB.XGBoosterUpdateOneIter(
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 2613, in signal_handler
+    raise AirflowTaskTerminated("Task received SIGTERM signal")
+airflow.exceptions.AirflowTaskTerminated: Task received SIGTERM signal
+[2026-06-08T05:47:28.546+0000] {taskinstance.py:1206} INFO - Marking task as UP_FOR_RETRY. dag_id=futsal_nightly_db_pipeline, task_id=train_ml_models, run_id=manual__2026-06-08T05:38:40.954562+00:00, execution_date=20260608T053840, start_date=20260608T054032, end_date=20260608T054728
+[2026-06-08T05:47:28.608+0000] {process_utils.py:80} INFO - Process psutil.Process(pid=407, status='terminated', exitcode=2, started='05:40:32') (407) terminated with exit code 2

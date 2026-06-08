@@ -1,0 +1,89 @@
+[2026-06-08T05:04:14.011+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-06-08T05:04:14.049+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: futsal_nightly_db_pipeline.train_ml_models scheduled__2026-06-05T00:00:00+00:00 [queued]>
+[2026-06-08T05:04:14.061+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: futsal_nightly_db_pipeline.train_ml_models scheduled__2026-06-05T00:00:00+00:00 [queued]>
+[2026-06-08T05:04:14.062+0000] {taskinstance.py:2306} INFO - Starting attempt 2 of 2
+[2026-06-08T05:04:14.077+0000] {taskinstance.py:2330} INFO - Executing <Task(PythonOperator): train_ml_models> on 2026-06-05 00:00:00+00:00
+[2026-06-08T05:04:14.087+0000] {standard_task_runner.py:63} INFO - Started process 293 to run task
+[2026-06-08T05:04:14.094+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'futsal_nightly_db_pipeline', 'train_ml_models', 'scheduled__2026-06-05T00:00:00+00:00', '--job-id', '74', '--raw', '--subdir', 'DAGS_FOLDER/futsal_pipeline.py', '--cfg-path', '/tmp/tmpjce1ktoe']
+[2026-06-08T05:04:14.100+0000] {standard_task_runner.py:91} INFO - Job 74: Subtask train_ml_models
+[2026-06-08T05:04:14.201+0000] {task_command.py:426} INFO - Running <TaskInstance: futsal_nightly_db_pipeline.train_ml_models scheduled__2026-06-05T00:00:00+00:00 [running]> on host 63b7fdbe0a1d
+[2026-06-08T05:04:14.326+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='futsal_admin' AIRFLOW_CTX_DAG_ID='futsal_nightly_db_pipeline' AIRFLOW_CTX_TASK_ID='train_ml_models' AIRFLOW_CTX_EXECUTION_DATE='2026-06-05T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2026-06-05T00:00:00+00:00'
+[2026-06-08T05:04:14.329+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-06-08T05:04:14.350+0000] {logging_mixin.py:188} INFO - 
+=======================================================
+[2026-06-08T05:04:14.351+0000] {logging_mixin.py:188} INFO - RUNNING MATCH DATA MODEL TRAINING PIPELINE
+[2026-06-08T05:04:14.351+0000] {logging_mixin.py:188} INFO - =======================================================
+[2026-06-08T05:04:14.352+0000] {logging_mixin.py:188} INFO - Loading match feature data...
+[2026-06-08T05:04:14.375+0000] {logging_mixin.py:188} INFO - Training match models...
+[2026-06-08T05:04:14.376+0000] {logging_mixin.py:188} INFO - Grid searching: RandomForestClassifier...
+[2026-06-08T05:04:14.377+0000] {logging_mixin.py:188} INFO - Grid searching: SVC...
+[2026-06-08T05:04:14.378+0000] {logging_mixin.py:188} INFO - Grid searching: LogisticRegression...
+[2026-06-08T05:04:14.379+0000] {logging_mixin.py:188} INFO - Training RandomForestClassifier...
+[2026-06-08T05:06:00.299+0000] {logging_mixin.py:188} INFO - Training SVC...
+[2026-06-08T05:06:00.613+0000] {logging_mixin.py:188} INFO - Training LogisticRegression...
+[2026-06-08T05:06:02.064+0000] {logging_mixin.py:188} INFO - 
+==================================================
+[2026-06-08T05:06:02.069+0000] {logging_mixin.py:188} INFO - Match Training Report:
+[2026-06-08T05:06:02.070+0000] {logging_mixin.py:188} INFO - ==================================================
+[2026-06-08T05:06:02.071+0000] {logging_mixin.py:188} INFO - Model: RandomForestClassifier
+[2026-06-08T05:06:02.071+0000] {logging_mixin.py:188} INFO - Accuracy: 0.7176
+[2026-06-08T05:06:02.072+0000] {logging_mixin.py:188} INFO - F1-Score: 0.7184
+[2026-06-08T05:06:02.072+0000] {logging_mixin.py:188} INFO - Best Params: {'classifier__max_depth': 20, 'classifier__min_samples_leaf': 4, 'classifier__min_samples_split': 2, 'classifier__n_estimators': 100}
+[2026-06-08T05:06:02.072+0000] {logging_mixin.py:188} INFO - --------------------------------------------------
+[2026-06-08T05:06:02.073+0000] {logging_mixin.py:188} INFO - Model: SVC
+[2026-06-08T05:06:02.074+0000] {logging_mixin.py:188} INFO - Accuracy: 0.7176
+[2026-06-08T05:06:02.074+0000] {logging_mixin.py:188} INFO - F1-Score: 0.7184
+[2026-06-08T05:06:02.075+0000] {logging_mixin.py:188} INFO - Best Params: {'classifier__C': 0.1, 'classifier__kernel': 'linear'}
+[2026-06-08T05:06:02.076+0000] {logging_mixin.py:188} INFO - --------------------------------------------------
+[2026-06-08T05:06:02.078+0000] {logging_mixin.py:188} INFO - Model: LogisticRegression
+[2026-06-08T05:06:02.079+0000] {logging_mixin.py:188} INFO - Accuracy: 0.6941
+[2026-06-08T05:06:02.085+0000] {logging_mixin.py:188} INFO - F1-Score: 0.6949
+[2026-06-08T05:06:02.088+0000] {logging_mixin.py:188} INFO - Best Params: {'classifier__C': 0.1}
+[2026-06-08T05:06:02.088+0000] {logging_mixin.py:188} INFO - --------------------------------------------------
+[2026-06-08T05:06:02.168+0000] {logging_mixin.py:188} INFO - 
+Best match model name: RandomForestClassifier
+[2026-06-08T05:06:02.177+0000] {logging_mixin.py:188} INFO - Best match model type: <class 'sklearn.pipeline.Pipeline'>
+[2026-06-08T05:06:02.453+0000] {logging_mixin.py:188} INFO - Best match model (architecture-specific) saved to models/RandomForestClassifier_matches_model.pkl
+[2026-06-08T05:06:02.456+0000] {logging_mixin.py:188} INFO - Match features saved to features/match_trained_features.pkl
+[2026-06-08T05:06:02.457+0000] {logging_mixin.py:188} INFO - 
+=======================================================
+[2026-06-08T05:06:02.458+0000] {logging_mixin.py:188} INFO - RUNNING PLAYER DATA MODEL TRAINING PIPELINE
+[2026-06-08T05:06:02.459+0000] {logging_mixin.py:188} INFO - =======================================================
+[2026-06-08T05:06:02.460+0000] {logging_mixin.py:188} INFO - Loading player feature data...
+[2026-06-08T05:06:02.519+0000] {logging_mixin.py:188} INFO - Training player models...
+[2026-06-08T05:06:02.520+0000] {logging_mixin.py:188} INFO - 
+================================================================================
+[2026-06-08T05:06:02.521+0000] {logging_mixin.py:188} INFO - TRAINING RandomForest
+[2026-06-08T05:06:02.521+0000] {logging_mixin.py:188} INFO - ================================================================================
+[2026-06-08T05:06:02.524+0000] {logging_mixin.py:188} INFO - Fitting 3 folds for each of 24 candidates, totalling 72 fits
+[2026-06-08T05:07:44.583+0000] {logging_mixin.py:188} INFO - BEST PARAMETERS FOR RandomForest: {'max_depth': 3, 'min_samples_leaf': 2, 'min_samples_split': 2, 'n_estimators': 200}
+[2026-06-08T05:07:44.638+0000] {logging_mixin.py:188} INFO - RESULTS FOR RandomForest: MAE: 3.3286, RMSE: 4.7092, R2: -0.0429
+[2026-06-08T05:07:44.639+0000] {logging_mixin.py:188} INFO - 
+================================================================================
+[2026-06-08T05:07:44.643+0000] {logging_mixin.py:188} INFO - TRAINING GradientBoosting
+[2026-06-08T05:07:44.643+0000] {logging_mixin.py:188} INFO - ================================================================================
+[2026-06-08T05:07:44.647+0000] {logging_mixin.py:188} INFO - Fitting 3 folds for each of 12 candidates, totalling 36 fits
+[2026-06-08T05:08:51.834+0000] {logging_mixin.py:188} INFO - BEST PARAMETERS FOR GradientBoosting: {'learning_rate': 0.03, 'max_depth': 3, 'n_estimators': 100}
+[2026-06-08T05:08:51.848+0000] {logging_mixin.py:188} INFO - RESULTS FOR GradientBoosting: MAE: 3.3465, RMSE: 4.7402, R2: -0.0567
+[2026-06-08T05:08:51.849+0000] {logging_mixin.py:188} INFO - 
+================================================================================
+[2026-06-08T05:08:51.859+0000] {logging_mixin.py:188} INFO - TRAINING ExtraTrees
+[2026-06-08T05:08:51.861+0000] {logging_mixin.py:188} INFO - ================================================================================
+[2026-06-08T05:08:51.870+0000] {logging_mixin.py:188} INFO - Fitting 3 folds for each of 8 candidates, totalling 24 fits
+[2026-06-08T05:09:08.870+0000] {logging_mixin.py:188} INFO - BEST PARAMETERS FOR ExtraTrees: {'max_depth': 5, 'min_samples_split': 2, 'n_estimators': 100}
+[2026-06-08T05:09:08.892+0000] {logging_mixin.py:188} INFO - RESULTS FOR ExtraTrees: MAE: 3.3024, RMSE: 4.6988, R2: -0.0383
+[2026-06-08T05:09:08.899+0000] {logging_mixin.py:188} INFO - 
+================================================================================
+[2026-06-08T05:09:08.906+0000] {logging_mixin.py:188} INFO - TRAINING RidgeRegression
+[2026-06-08T05:09:08.906+0000] {logging_mixin.py:188} INFO - ================================================================================
+[2026-06-08T05:09:08.909+0000] {logging_mixin.py:188} INFO - Fitting 3 folds for each of 3 candidates, totalling 9 fits
+[2026-06-08T05:09:09.095+0000] {logging_mixin.py:188} INFO - BEST PARAMETERS FOR RidgeRegression: {'alpha': 10.0}
+[2026-06-08T05:09:09.108+0000] {logging_mixin.py:188} INFO - RESULTS FOR RidgeRegression: MAE: 3.313, RMSE: 4.6744, R2: -0.0276
+[2026-06-08T05:09:09.108+0000] {logging_mixin.py:188} INFO - 
+================================================================================
+[2026-06-08T05:09:09.114+0000] {logging_mixin.py:188} INFO - TRAINING XGBoost
+[2026-06-08T05:09:09.115+0000] {logging_mixin.py:188} INFO - ================================================================================
+[2026-06-08T05:09:09.121+0000] {logging_mixin.py:188} INFO - Fitting 3 folds for each of 12 candidates, totalling 36 fits
+[2026-06-08T05:27:32.676+0000] {local_task_job_runner.py:124} ERROR - Received SIGTERM. Terminating subprocesses
+[2026-06-08T05:27:32.716+0000] {process_utils.py:132} INFO - Sending 15 to group 293. PIDs of all processes in the group: [293]
+[2026-06-08T05:27:32.720+0000] {process_utils.py:87} INFO - Sending the signal 15 to group 293
