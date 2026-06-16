@@ -84,6 +84,8 @@ x-airflow-common:
     - ${AIRFLOW_PROJ_DIR:-.}/models:/opt/airflow/models
     - ${AIRFLOW_PROJ_DIR:-.}/data:/opt/airflow/data
     - ${AIRFLOW_PROJ_DIR:-.}/features:/opt/airflow/features
+    - ${AIRFLOW_PROJ_DIR:-.}/db:/opt/airflow/db
+    - ${AIRFLOW_PROJ_DIR:-.}/db_pass:/opt/airflow/db_pass
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
@@ -91,22 +93,6 @@ x-airflow-common:
       condition: service_healthy
 
 services:
-  mysql-db:
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: airflow_db
-    ports:
-      - "3307:3306"
-    volumes:
-      - mysql-db-volume:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-      interval: 10s
-      retries: 5
-      start_period: 30s
-    restart: always
-
   postgres:
     image: postgres:13
     environment:
@@ -241,13 +227,9 @@ services:
       - "8000:8000"
     environment:
       - IN_DOCKER=true
-      - DATABASE_URI=mysql+pymysql://root:root@mysql-db:3306/airflow_db
-    depends_on:
-      - mysql-db
     volumes:
       - .:/app
     restart: always
 
 volumes:
-  mysql-db-volume:
   postgres-db-volume:

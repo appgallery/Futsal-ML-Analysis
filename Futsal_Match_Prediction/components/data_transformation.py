@@ -443,289 +443,167 @@ class DataMatchTransformation:
 
 
 class DataPlayerTransformation:
-
-    def remove_cols(self, player):
-        player = player.dropna(
-            subset=['user_id', 'match_id']
-        )
-        player = player.drop_duplicates()
-        return player
-
-    
-    def standardize_player(self, player):
-        player['type'] = (
-            player['type']
-            .astype(str)
-            .str.upper()
-            .str.strip()
-        )
-        player['created_on'] = pd.to_datetime(
-            player['created_on'],
-            errors='coerce'
-        )
-        player['player_name'] = (
-            player['first_name'].fillna('') +
-            ' ' +
-            player['last_name'].fillna('')
-        ).str.strip()
-        return player
-
-    def convert_match_time(self, x):
-        try:
-            mins, secs = str(x).split(':')
-            return int(mins) + (int(secs) / 60)
-        except:
-            return np.nan
-
-    def create_player_features(self, player):
-        player['match_time_mins'] = (
-            player['match_time']
-            .apply(self.convert_match_time)
-        )
-        
-        player['goal'] = np.where(player['type'] == 'SCORE', 1, 0)
-        player['foul'] = np.where(player['type'] == 'FOULS', 1, 0)
-        player['yellow_card'] = np.where(player['type'] == 'YELLOWCARD', 1, 0)
-        player['red_card'] = np.where(player['type'] == 'REDCARD', 1, 0)
-        player['penalty_event'] = np.where(player['type'] == 'PENALTY', 1, 0)
-        player['assist'] = np.where(player['assist_player_id'].notnull(), 1, 0)
-        player['own_goal'] = np.where(player['is_self_goal'] == 1, 1, 0)
-        
-        player['clutch_goal'] = np.where(
-            (player['goal'] == 1) & (player['match_time_mins'] >= 15),
-            1,
-            0
-        )
-        return player
-
-    def aggregate_player_match(self, player):
-        player = (
-            player.groupby(['match_id', 'team_id', 'user_id', 'player_name'])
-            .agg(
-                goals=('goal', 'sum'),
-                assists=('assist', 'sum'),
-                fouls=('foul', 'sum'),
-                yellow_cards=('yellow_card', 'sum'),
-                red_cards=('red_card', 'sum'),
-                penalties=('penalty_event', 'sum'),
-                own_goals=('own_goal', 'sum'),
-                clutch_goals=('clutch_goal', 'sum'),
-                total_player=('type', 'count'),
-                first_event_time=('created_on', 'min')
-            )
-            .reset_index()
-        )
-        return player
-
-    def merge_match_info(self, players, matches):
-        match_cols = [
-            'match_id',
-            'startDate',
-            'homeTeamId',
-            'awayTeamId',
-            'homeTeamName',
-            'awayTeamName',
-            'winningTeam',
-            'winningTeamGoals',
-            'losingTeamGoals'
-        ]
-        match_cols = [c for c in matches.columns if c in match_cols]
-        matches_clean = matches[match_cols].copy()
-        matches_clean['startDate'] = pd.to_datetime(
-            matches_clean['startDate'],
-            errors='coerce'
-        )
-        matches_clean = matches_clean.drop_duplicates(subset=['match_id'])
-        
-        players = players.merge(
-            matches_clean,
-            on='match_id',
-            how='left'
-        )
-        
-        players['match_date'] = pd.to_datetime(
-            players['startDate'],
-            errors='coerce'
-        )
-        players = players.dropna(subset=['match_date'])
-        return players
-
-    def remove_low_history_players(self, players):
-        matches_per_player = (
-            players
-            .groupby('user_id')['match_id']
-            .nunique()
-        )
-        valid_players = matches_per_player[
-            matches_per_player >= 3
-        ].index
-        players = players[
-            players['user_id'].isin(valid_players)
-        ]
-        return players
-
-    def create_performance_features(self, players):
-        players['player_team_won'] = np.where(
-            players['team_id'] == players['winningTeam'],
-            1,
-            0
-        )
-        
-        players['perf_score'] = (
-            players['goals'] * 3.0 +
-            players['assists'] * 2.0 +
-            players['clutch_goals'] * 1.5 +
-            players['penalties'] * 1.0 +
-            players['player_team_won'] * 1.5 -
-            players['fouls'] * 0.5 -
-            players['yellow_cards'] * 1.0 -
-            players['red_cards'] * 3.0 -
-            players['own_goals'] * 2.0
-        )
-        
-        players['best_match_score'] = (
-            players
-            .groupby('match_id')['perf_score']
-            .transform('max')
-        )
-        
-        players['is_best_player'] = np.where(
-            players['perf_score'] == players['best_match_score'],
-            1,
-            0
-        )
-        return players
-
-    def create_rolling_features(self, players):
-        WINDOW = 5
-        players = players.sort_values(['user_id', 'match_date'])
-        
-        for col in ['goals', 'assists', 'perf_score', 'fouls']:
-            players[f'roll5_{col}'] = (
-                players
-                .groupby('user_id')[col]
-                .transform(
-                    lambda x: x.shift(1)
-                    .rolling(WINDOW, min_periods=1)
-                    .mean()
-                )
-            )
-        return players
-
-    def create_career_features(self, players):
-        players['career_matches'] = (
-            players
-            .groupby('user_id')
-            .cumcount()
-        )
-        
-        for col in ['goals', 'assists', 'perf_score']:
-            players[f'career_{col}'] = (
-                players
-                .groupby('user_id')[col]
-                .cumsum()
-                - players[col]
-            )
-            
-        players['career_gpg'] = np.where(
-            players['career_matches'] > 0,
-            players['career_goals'] / players['career_matches'],
-            0
-        )
-        players['career_apg'] = np.where(
-            players['career_matches'] > 0,
-            players['career_assists'] / players['career_matches'],
-            0
-        )
-        players['career_avg_perf'] = np.where(
-            players['career_matches'] > 0,
-            players['career_perf_score'] / players['career_matches'],
-            0
-        )
-        return players
-
-    def create_momentum_features(self, players):
-        players['goal_trend'] = (
-            players['roll5_goals'] - players['career_gpg']
-        )
-        players['perf_trend'] = (
-            players['roll5_perf_score'] - players['career_avg_perf']
-        )
-        return players
-
-    def create_age_features(self, players, player):
-        dob = (
-            player[['user_id', 'date_of_birth']]
-            .drop_duplicates('user_id')
-        )
-        dob['date_of_birth'] = pd.to_datetime(
-            dob['date_of_birth'],
-            errors='coerce'
-        )
-        
-        players = players.merge(
-            dob,
-            on='user_id',
-            how='left'
-        )
-        players['age'] = (
-            (players['match_date'] - players['date_of_birth'])
-            .dt.days / 365.25
-        )
-        return players
-
-    def create_log_features(self, players):
-        players['log_career_goals'] = np.log1p(
-            players['career_goals']
-        )
-        players['log_career_matches'] = np.log1p(
-            players['career_matches']
-        )
-        return players
-
     def transform(self, players, matches):
-        raw_players = players.copy()
-
-        # Step 1: Clean and Standardize Event (Player) Rows
-        players = self.remove_cols(players)
-        players = self.standardize_player(players)
+        import numpy as np
         
-        # Step 2: Create Event-level Features
-        players = self.create_player_features(players)
+        # 1. Clean dates
+        players['created_on'] = pd.to_datetime(players['created_on'], errors='coerce')
+        matches['startDate'] = pd.to_datetime(matches['startDate'], errors='coerce')
         
-        # Step 3: Aggregate to Player-Match Level
-        players = self.aggregate_player_match(players)
+        # 2. Extract Event Dataframes
+        players['type'] = players['type'].astype(str).str.upper()
         
-        # Step 4: Merge Match Details and Outcome
-        players = self.merge_match_info(players, matches)
+        goals_df = (
+            players[players['type'] == 'SCORE']
+            .groupby(['match_id', 'user_id'])
+            .size()
+            .reset_index(name='goals')
+        )
         
-        # Step 5: Filter out Low History Players
-        players = self.remove_low_history_players(players)
+        fouls_df = (
+            players[players['type'] == 'FOULS']
+            .groupby(['match_id', 'user_id'])
+            .size()
+            .reset_index(name='fouls')
+        )
         
-        # Step 6: Create Team & Performance Features
-        players = self.create_performance_features(players)
+        yellow_df = (
+            players[players['type'] == 'YELLOWCARD']
+            .groupby(['match_id', 'user_id'])
+            .size()
+            .reset_index(name='yellow_cards')
+        )
         
-        # Step 7: Create Rolling Metrics (Time-safe)
-        players = self.create_rolling_features(players)
+        red_df = (
+            players[players['type'] == 'REDCARD']
+            .groupby(['match_id', 'user_id'])
+            .size()
+            .reset_index(name='red_cards')
+        )
         
-        # Step 8: Create Career Averages
-        players = self.create_career_features(players)
+        assist_df = (
+            players[players['assist_player_id'].notna()]
+            .groupby(['match_id', 'assist_player_id'])
+            .size()
+            .reset_index(name='assists')
+        )
+        assist_df.rename(columns={'assist_player_id': 'user_id'}, inplace=True)
         
-        # Step 9: Create Trends/Momentum
-        players = self.create_momentum_features(players)
+        # 3. Merge Event Dataframes
+        player_match = pd.concat([
+            goals_df[['match_id', 'user_id']],
+            fouls_df[['match_id', 'user_id']],
+            yellow_df[['match_id', 'user_id']],
+            red_df[['match_id', 'user_id']],
+            assist_df[['match_id', 'user_id']]
+        ]).drop_duplicates()
         
-        # Step 10: Create Age Metrics
-        players = self.create_age_features(players, raw_players)
+        for df in [goals_df, fouls_df, yellow_df, red_df, assist_df]:
+            player_match = player_match.merge(df, on=['match_id', 'user_id'], how='left')
+            
+        player_match.fillna(0, inplace=True)
         
-        # Step 11: Create Log Transforms
-        players = self.create_log_features(players)
+        # 4. Merge Player Info
+        player_info = (
+            players[['match_id', 'user_id', 'team_id', 'first_name', 'last_name', 'date_of_birth']]
+            .drop_duplicates(['match_id', 'user_id'])
+        )
+        player_match = player_match.merge(player_info, on=['match_id', 'user_id'], how='left')
         
-        # Step 12: Final Cleaning
-        players = players.fillna(0)
+        # 5. Merge Match Info
+        match_cols = [
+            'id', 'startDate', 'homeTeamId', 'awayTeamId', 'homeTeamName',
+            'awayTeamName', 'competitionName', 'seasonName'
+        ]
+        match_cols_avail = [c for c in match_cols if c in matches.columns]
         
-        players.to_csv('data/players_ml.csv', index=False)
+        player_match = player_match.merge(
+            matches[match_cols_avail],
+            left_on='match_id', right_on='id', how='left'
+        )
+        if 'id' in player_match.columns:
+            player_match.drop(columns=['id'], inplace=True)
+            
+        player_match.rename(columns={'startDate': 'match_date'}, inplace=True)
         
-        return players
+        # 6. Basic Features
+        player_match['player_name'] = player_match['first_name'].fillna('') + ' ' + player_match['last_name'].fillna('')
+        player_match['match_date'] = pd.to_datetime(player_match['match_date'])
+        player_match['date_of_birth'] = pd.to_datetime(player_match['date_of_birth'], errors='coerce')
+        player_match['age'] = ((player_match['match_date'] - player_match['date_of_birth']).dt.days) / 365.25
+        
+        player_match = player_match.sort_values(['user_id', 'match_date'])
+        
+        player_match['goal_contribution'] = player_match['goals'] + player_match['assists']
+        player_match['clutch_goals'] = (player_match['goals'] >= 2).astype(int)
+        
+        # 7. Perf Score
+        player_match['perf_score'] = (
+            player_match['goals'] * 3
+            + player_match['assists'] * 2
+            + player_match['clutch_goals'] * 1.5
+            - player_match['fouls'] * 0.5
+            - player_match['yellow_cards']
+            - player_match['red_cards'] * 3
+        )
+        
+        # 8. Career Stats
+        player_match['career_matches'] = player_match.groupby('user_id').cumcount()
+        player_match['career_goals'] = player_match.groupby('user_id')['goals'].cumsum() - player_match['goals']
+        player_match['career_assists'] = player_match.groupby('user_id')['assists'].cumsum() - player_match['assists']
+        player_match['career_perf_score'] = player_match.groupby('user_id')['perf_score'].cumsum() - player_match['perf_score']
+        
+        player_match['career_gpg'] = player_match['career_goals'] / player_match['career_matches'].replace(0, np.nan)
+        player_match['career_apg'] = player_match['career_assists'] / player_match['career_matches'].replace(0, np.nan)
+        player_match['career_avg_perf'] = player_match['career_perf_score'] / player_match['career_matches'].replace(0, np.nan)
+        
+        # 9. Rolling Metrics
+        for w in [3, 5, 10]:
+            player_match[f'roll{w}_goals'] = player_match.groupby('user_id')['goals'].transform(
+                lambda x: x.shift(1).rolling(w, min_periods=1).mean())
+            player_match[f'roll{w}_assists'] = player_match.groupby('user_id')['assists'].transform(
+                lambda x: x.shift(1).rolling(w, min_periods=1).mean())
+            player_match[f'roll{w}_perf_score'] = player_match.groupby('user_id')['perf_score'].transform(
+                lambda x: x.shift(1).rolling(w, min_periods=1).mean())
+                
+        player_match['ewm_goals'] = player_match.groupby('user_id')['goals'].transform(
+            lambda x: x.shift(1).ewm(span=5).mean())
+        player_match['ewm_assists'] = player_match.groupby('user_id')['assists'].transform(
+            lambda x: x.shift(1).ewm(span=5).mean())
+        player_match['ewm_perf_score'] = player_match.groupby('user_id')['perf_score'].transform(
+            lambda x: x.shift(1).ewm(span=5).mean())
+            
+        player_match['goal_trend'] = player_match['roll5_goals'] - player_match['career_gpg']
+        player_match['assist_trend'] = player_match['roll5_assists'] - player_match['career_apg']
+        player_match['perf_trend'] = player_match['roll5_perf_score'] - player_match['career_avg_perf']
+        
+        # 10. Temporal Features
+        player_match['prev_match_date'] = player_match.groupby('user_id')['match_date'].shift(1)
+        player_match['days_since_last_match'] = (player_match['match_date'] - player_match['prev_match_date']).dt.days
+        player_match['days_since_last_match'] = player_match['days_since_last_match'].fillna(-1)
+        
+        # 11. Experience
+        player_match['experience_score'] = np.log1p(player_match['career_matches']) * np.log1p(player_match['career_goals'] + 1)
+        player_match['age'] = player_match['age'].fillna(player_match['age'].median())
+        
+        player_match['log_career_goals'] = np.log1p(player_match['career_goals'])
+        player_match['log_career_assists'] = np.log1p(player_match['career_assists'])
+        player_match['log_career_matches'] = np.log1p(player_match['career_matches'])
+        
+        num_cols = player_match.select_dtypes(include=np.number).columns
+        player_match[num_cols] = player_match[num_cols].fillna(0)
+        
+        # 12. Best Player Target
+        player_match['best_match_score'] = player_match.groupby('match_id')['perf_score'].transform('max')
+        player_match['is_best_player'] = (player_match['perf_score'] == player_match['best_match_score']).astype(int)
+        
+        # 13. Filter out rows with team_id == 0
+        player_match = player_match[player_match['team_id'] != 0].copy()
+        
+        # 14. Save CSV
+        player_match.to_csv('data/players_ml.csv', index=False)
+        
+        return player_match
 
 
 # Alias for backwards compatibility

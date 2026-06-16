@@ -16,9 +16,14 @@ from sklearn.metrics import (
     f1_score,
     mean_squared_error, 
     mean_absolute_error, 
-    r2_score
+    r2_score,
+    precision_score,
+    recall_score,
+    roc_auc_score
 )
-from xgboost import XGBRegressor
+from xgboost import XGBRegressor, XGBClassifier
+from lightgbm import LGBMClassifier
+from catboost import CatBoostClassifier
 import joblib
 import warnings
 warnings.filterwarnings("ignore")
@@ -168,60 +173,31 @@ class MatchModelTrainer:
 
 class PlayerModelTrainer:
     def __init__(self):
-        self.feature = [
-            'roll5_goals',
-            'roll5_assists',
-            'roll5_perf_score',
-            'roll5_fouls',
-            'career_matches',
-            'career_goals',
-            'career_assists',
-            'career_perf_score',
-            'career_gpg',
-            'career_apg',
-            'career_avg_perf',
-            'goal_trend',
-            'perf_trend',
-            'age',
-            'log_career_goals',
-            'log_career_matches'
-        ]
+        self.feature = []  # To be dynamically populated in prepare_data
         self.features = self.feature  # Alias for compatibility
-        self.target = 'perf_score'
+        self.target = 'is_best_player'
         self.grid_models = []
 
-        # Regressor param grids
+        # Classifier param grids
         self.params = {
-            "RandomForest": {
-                'n_estimators': [100, 200],
-                'max_depth': [3, 5, 10],
-                'min_samples_split': [2, 5],
-                'min_samples_leaf': [1, 2]
-            },
-            "GradientBoosting": {
-                'n_estimators': [100, 200],
-                'learning_rate': [0.03, 0.05, 0.1],
-                'max_depth': [3, 5]
-            },
-            "ExtraTrees": {
-                'n_estimators': [100, 200],
-                'max_depth': [5, 10],
-                'min_samples_split': [2, 5]
-            },
-            "RidgeRegression": {
-                'alpha': [0.1, 1.0, 10.0]
-            },
             "XGBoost": {
                 'n_estimators': [100, 200],
-                'max_depth': [3, 4, 5],
-                'learning_rate': [0.03, 0.05],
-                'subsample': [0.8],
-                'colsample_bytree': [0.8]
+                'max_depth': [3, 5, 7],
+                'learning_rate': [0.01, 0.05, 0.1]
+            },
+            "LightGBM": {
+                'n_estimators': [100, 200],
+                'max_depth': [3, 5, 7],
+                'learning_rate': [0.01, 0.05, 0.1]
+            },
+            "CatBoost": {
+                'depth': [4, 6, 8],
+                'learning_rate': [0.01, 0.05, 0.1],
+                'iterations': [200, 500]
             }
         }
 
     def prepare_data(self, feature_df):
-        # Make sure data is sorted by match_date
         if 'match_date' in feature_df.columns:
             feature_df['match_date'] = pd.to_datetime(
                 feature_df['match_date'],
@@ -229,7 +205,21 @@ class PlayerModelTrainer:
             )
             feature_df = feature_df.sort_values('match_date')
 
-        X = feature_df[self.feature].copy()
+        DROP_COLS = [
+            'match_id', 'user_id',
+            'player_name', 'first_name', 'last_name',
+            'date_of_birth', 'match_date', 'prev_match_date',
+            'goals', 'assists', 'fouls', 'yellow_cards', 'red_cards',
+            'goal_contribution', 'clutch_goals', 'perf_score',
+            'homeTeamName', 'awayTeamName', 'competitionName', 'seasonName',
+            'best_match_score', 'is_best_player'
+        ]
+
+        X = feature_df.drop(columns=DROP_COLS, errors='ignore').copy()
+        
+        self.feature = X.columns.tolist()
+        self.features = self.feature
+        
         y = feature_df[self.target].copy()
         return X, y, feature_df
 
@@ -246,27 +236,23 @@ class PlayerModelTrainer:
         self.grid_models = []
         models_report = []
 
-        # Define Regressors
-        regressors = {
-            "RandomForest": RandomForestRegressor(random_state=42),
-            "GradientBoosting": GradientBoostingRegressor(random_state=42),
-            "ExtraTrees": ExtraTreesRegressor(random_state=42),
-            "RidgeRegression": Ridge(),
-            "XGBoost": XGBRegressor(random_state=42, n_jobs=1)
+        classifiers = {
+            "XGBoost": XGBClassifier(objective='binary:logistic', eval_metric='logloss', scale_pos_weight=7.5, random_state=42),
+            "LightGBM": LGBMClassifier(class_weight='balanced', random_state=42, verbose=-1),
+            "CatBoost": CatBoostClassifier(auto_class_weights='Balanced', verbose=0, random_state=42, allow_writing_files=False)
         }
 
-        for name, model in regressors.items():
+        for name, model in classifiers.items():
             print("\n" + "="*80)
             print(f"TRAINING {name}")
             print("="*80)
 
-            # Use single process to avoid multiprocessing deadlock and high memory usage
             n_jobs = 1
 
             grid = GridSearchCV(
                 estimator=model,
                 param_grid=self.params[name],
-                scoring='neg_mean_squared_error',
+                scoring='f1',
                 cv=3,
                 verbose=1,
                 n_jobs=n_jobs
@@ -277,19 +263,23 @@ class PlayerModelTrainer:
 
             print(f"BEST PARAMETERS FOR {name}: {grid.best_params_}")
 
-            # Predict and evaluate
             preds = best_model.predict(X_test)
-            mae = mean_absolute_error(y_test, preds)
-            rmse = np.sqrt(mean_squared_error(y_test, preds))
-            r2 = r2_score(y_test, preds)
+            try:
+                probs = best_model.predict_proba(X_test)[:, 1]
+                roc_auc = roc_auc_score(y_test, probs)
+            except:
+                roc_auc = 0.0
 
-            print(f"RESULTS FOR {name}: MAE: {round(mae, 4)}, RMSE: {round(rmse, 4)}, R2: {round(r2, 4)}")
+            acc = accuracy_score(y_test, preds)
+            f1 = f1_score(y_test, preds)
+
+            print(f"RESULTS FOR {name}: Accuracy: {round(acc, 4)}, F1: {round(f1, 4)}, ROC_AUC: {round(roc_auc, 4)}")
 
             self.grid_models.append((name, grid))
             models_report.append((
                 name,
-                round(r2, 4),
-                f"MAE: {round(mae, 4)} | RMSE: {round(rmse, 4)}",
+                round(f1, 4),
+                f"Accuracy: {round(acc, 4)} | ROC_AUC: {round(roc_auc, 4)}",
                 grid.best_params_
             ))
 
@@ -298,35 +288,25 @@ class PlayerModelTrainer:
     def train_best_model(self, X, y):
         X_train, X_test, y_train, y_test = self.split_train_test(X, y)
         best_model = None
-        best_r2 = -float('inf')
+        best_f1 = -float('inf')
         best_model_name = ""
 
         for name, grid in self.grid_models:
             preds = grid.best_estimator_.predict(X_test)
-            r2 = r2_score(y_test, preds)
-            if r2 > best_r2:
-                best_r2 = r2
+            f1 = f1_score(y_test, preds)
+            if f1 > best_f1:
+                best_f1 = f1
                 best_model = grid.best_estimator_
                 best_model_name = name
 
         return best_model, best_model_name, X_test, y_test
 
-    def convert_scores_to_probabilities(self, scores):
-        scores = np.array(scores)
-        # Remove negative values
-        scores = scores - scores.min()
-        # Prevent division by zero
-        scores = scores + 1
-        probs = scores / scores.sum()
-        return probs * 100
-
     def predict_player_match_performance(self, model, player_df, feature_cols):
-        preds = model.predict(player_df[feature_cols])
+        probs = model.predict_proba(player_df[feature_cols])[:, 1]
         result = player_df.copy()
-        result['predicted_perf_score'] = preds
-        result['play_well_probability'] = self.convert_scores_to_probabilities(preds)
-        result['play_well_probability'] = result['play_well_probability'].round(2)
-        result = result.sort_values('play_well_probability', ascending=False)
+        result['best_player_probability'] = probs
+        result['best_player_probability'] = (result['best_player_probability'] * 100).round(2)
+        result = result.sort_values('best_player_probability', ascending=False)
         return result
 
     def save_model(self, model, path):

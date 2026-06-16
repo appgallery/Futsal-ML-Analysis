@@ -38,9 +38,9 @@ default_args = {
 }
 
 with DAG(
-    'futsal_nightly_db_pipeline',
+    'futsal_weekly_db_pipeline',
     default_args=default_args,
-    schedule='0 0 * * *', # Runs at midnight every day
+    schedule='0 0 * * 0', # Runs at midnight every Sunday
     catchup=False
 ) as dag:
 

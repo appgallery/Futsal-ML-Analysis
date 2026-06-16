@@ -9,46 +9,28 @@ from pipeline.training_pipeline import TrainingPipeline
 
 routes = APIRouter(tags=["Prediction"])
 
-STATE_FILE = "data/pipeline_state.json"
-DATA_FILE = "data/series-futsal-men-matches.csv"
+# STATE_FILE = "data/pipeline_state.json"
+# DATA_FILE = "data/series-futsal-men-matches.csv"
 
 inference_engine = None
 
-def get_file_hash(filepath):
-    hasher = hashlib.md5()
-    with open(filepath, 'rb') as f:
-        buf = f.read()
-    hasher.update(buf)
-    return hasher.hexdigest()
+# def get_file_hash(filepath):
+#     hasher = hashlib.md5()
+#     with open(filepath, 'rb') as f:
+#         buf = f.read()
+#     hasher.update(buf)
+#     return hasher.hexdigest()
 
 @contextlib.asynccontextmanager
 async def lifespan(app: FastAPI):
     print("Starting up Prediction service...")
     try:
-        # if os.path.exists(DATA_FILE):
-        #     current_hash = get_file_hash(DATA_FILE)
-        #     previous_hash = None
-        #     
-        #     if os.path.exists(STATE_FILE):
-        #         with open(STATE_FILE, 'r') as f:
-        #             state = json.load(f)
-        #             previous_hash = state.get('data_hash')
-        #     
-        #     if current_hash != previous_hash:
-        #         print("New data detected. Running full data and training pipeline...")
-        #         # Run Data Pipeline
-        #         DataPipeline().run_pipeline()
-        #         
-        #         # Run Training Pipeline
-        #         TrainingPipeline().run_pipeline()
-        #         
-        #         # Update state
-        #         with open(STATE_FILE, 'w') as f:
-        #             json.dump({'data_hash': current_hash}, f)
-        #     else:
-        #         print("No new data detected. Skipping pipeline run.")
-        # else:
-        #     print(f"Data file {DATA_FILE} not found. Skipping training.")
+        print("Running full data and training pipeline on startup...")
+        # Run Data Pipeline
+        # DataPipeline().run_pipeline()
+        
+        # Run Training Pipeline
+        # TrainingPipeline().run_pipeline()
 
         # Load the best model for inference
         try:

@@ -111,7 +111,7 @@ class PlayerTrainingPipeline:
 
         for report in models_report:
             print(f"Model: {report[0]}")
-            print(f"R2-Score: {report[1]}")
+            print(f"F1-Score: {report[1]}")
             print(f"Metrics: {report[2]}")
             print(f"Best Params: {report[3]}")
             print("-" * 50)

@@ -1,52 +1,90 @@
 import pandas as pd
-import numpy as np
-import os
-from sqlalchemy import create_engine
+from db.db_connection import DB
+
 
 class DataIngestion:
-
     def __init__(self):
-        # --- OLD CSV LOGIC (Commented out for Production Reversion) ---
-        # self.match_path = "data/series-futsal-men-matches.csv"
-        # self.player_path = "data/players-futsal-men-scores.csv"
+        self.db = DB()
 
-        # --- NEW DATABASE LOGIC ---
-        # Get connection string from environment variables, fallback to None
-        self.db_uri = os.environ.get("DATABASE_URI")
-        if self.db_uri:
-            self.engine = create_engine(self.db_uri)
-        else:
+        self.match_query = """
+        SELECT
+            m.*,
+            ht.name AS homeTeamName,
+            at.name AS awayTeamName,
+            c.name AS competitionName,
+            s.name AS seasonName
+        FROM futsaloz.cmp_matches m
+        LEFT JOIN futsaloz.teams ht
+            ON m.homeTeamId = ht.id
+        LEFT JOIN futsaloz.teams at
+            ON m.awayTeamId = at.id
+        LEFT JOIN futsaloz.competition c
+            ON m.cmp_id = c.id
+        LEFT JOIN futsaloz.season s
+            ON c.season_id = s.id
+        WHERE m.cmp_id IN (
+            1028, 948, 878, 725, 627,
+            527, 430, 312, 238, 130
+        );
+        """
+
+        self.player_query = """
+        SELECT
+            lmsc.*,
+            u.first_name,
+            u.last_name,
+            u.date_of_birth
+        FROM futsaloz.live_match_score_cards lmsc
+        LEFT JOIN futsaloz.users u
+            ON lmsc.user_id = u.user_id
+        WHERE lmsc.comp_id IN (
+            1028, 948, 878, 725, 627,
+            527, 430, 312, 238, 130
+        )
+        AND lmsc.type IN (
+            'SCORE',
+            'FOULS',
+            'YELLOWCARD',
+            'REDCARD'
+        )
+        AND lmsc.user_id <> 3;
+        """
+
+        try:
+            self.db.db_test_connection()
+            self.engine = self.db.db_create_engine()
+            print("Database connection established.")
+        except Exception as e:
             self.engine = None
-            print("WARNING: DATABASE_URI environment variable not set. Please set it before running in production.")
+            print(f"Database connection failed: {e}")
 
     def read_match_data(self):
-        # --- OLD CSV LOGIC ---
-        # return pd.read_csv(self.match_path)
+        if self.engine is None:
+            raise ConnectionError("Database engine not available.")
 
-        # --- NEW DATABASE LOGIC ---
-        if self.engine:
-            # Assumes table name is 'futsal_men_matches'. Change if different.
-            return pd.read_sql("SELECT * FROM futsal_men_matches", self.engine)
-        else:
-            raise ValueError("Cannot read match data from database: DATABASE_URI is not set.")
-    
+        from sqlalchemy import text
+        with self.engine.connect() as conn:
+            result = conn.execute(text(self.match_query))
+            return pd.DataFrame(result.fetchall(), columns=result.keys())
+
     def read_player_data(self):
-        # --- OLD CSV LOGIC ---
-        # return pd.read_csv(self.player_path)
+        if self.engine is None:
+            raise ConnectionError("Database engine not available.")
 
-        # --- NEW DATABASE LOGIC ---
-        if self.engine:
-            # Assumes table name is 'futsal_men_scores'. Change if different.
-            return pd.read_sql("SELECT * FROM futsal_men_scores", self.engine)
-        else:
-             raise ValueError("Cannot read player data from database: DATABASE_URI is not set.")
+        from sqlalchemy import text
+        with self.engine.connect() as conn:
+            result = conn.execute(text(self.player_query))
+            return pd.DataFrame(result.fetchall(), columns=result.keys())
 
     def ingest_match_data(self):
         matches_raw = self.read_match_data()
         matches = matches_raw.copy()
         return matches
-    
+
     def ingest_player_data(self):
         player_raw = self.read_player_data()
         player = player_raw.copy()
         return player
+
+    def close_connection(self):
+        self.db.db_close_connection()

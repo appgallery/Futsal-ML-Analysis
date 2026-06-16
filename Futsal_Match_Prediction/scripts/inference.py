@@ -235,20 +235,14 @@ class Inference:
         valid_features = [col for col in self.player_features if col in winning_players_df.columns]
         winning_players_df[valid_features] = winning_players_df[valid_features].fillna(0)
 
-        # Scale predictions to play well probabilities
-        def convert_scores_to_probabilities(scores):
-            scores = np.array(scores)
-            if len(scores) == 0:
-                return scores
-            scores = scores - scores.min()
-            scores = scores + 1
-            probs = scores / scores.sum()
-            return probs * 100
-
-        # Predict performance score
-        preds = self.player_model.predict(winning_players_df[valid_features])
-        winning_players_df['predicted_perf_score'] = preds
-        winning_players_df['play_well_probability'] = convert_scores_to_probabilities(preds).round(2)
+        # Predict play well probability
+        if hasattr(self.player_model, 'predict_proba'):
+            probs = self.player_model.predict_proba(winning_players_df[valid_features])[:, 1]
+        else:
+            probs = self.player_model.predict(winning_players_df[valid_features])
+            
+        winning_players_df['predicted_perf_score'] = probs  # Placeholder since we don't predict regression score anymore
+        winning_players_df['play_well_probability'] = (probs * 100).round(2)
 
         # Sort player predictions
         winning_players_df = winning_players_df.sort_values('play_well_probability', ascending=False)

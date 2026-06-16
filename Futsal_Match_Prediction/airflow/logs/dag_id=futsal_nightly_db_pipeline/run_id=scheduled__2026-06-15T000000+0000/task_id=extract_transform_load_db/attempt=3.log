@@ -1,0 +1,85 @@
+[2026-06-16T06:06:39.435+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-06-16T06:06:39.471+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: futsal_nightly_db_pipeline.extract_transform_load_db scheduled__2026-06-15T00:00:00+00:00 [queued]>
+[2026-06-16T06:06:39.480+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: futsal_nightly_db_pipeline.extract_transform_load_db scheduled__2026-06-15T00:00:00+00:00 [queued]>
+[2026-06-16T06:06:39.481+0000] {taskinstance.py:2306} INFO - Starting attempt 3 of 4
+[2026-06-16T06:06:39.496+0000] {taskinstance.py:2330} INFO - Executing <Task(PythonOperator): extract_transform_load_db> on 2026-06-15 00:00:00+00:00
+[2026-06-16T06:06:39.505+0000] {standard_task_runner.py:63} INFO - Started process 211 to run task
+[2026-06-16T06:06:39.510+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'futsal_nightly_db_pipeline', 'extract_transform_load_db', 'scheduled__2026-06-15T00:00:00+00:00', '--job-id', '10', '--raw', '--subdir', 'DAGS_FOLDER/futsal_pipeline.py', '--cfg-path', '/tmp/tmpkpkjk_5r']
+[2026-06-16T06:06:39.514+0000] {standard_task_runner.py:91} INFO - Job 10: Subtask extract_transform_load_db
+[2026-06-16T06:06:39.607+0000] {task_command.py:426} INFO - Running <TaskInstance: futsal_nightly_db_pipeline.extract_transform_load_db scheduled__2026-06-15T00:00:00+00:00 [running]> on host a098f67a6360
+[2026-06-16T06:06:39.733+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='futsal_admin' AIRFLOW_CTX_DAG_ID='futsal_nightly_db_pipeline' AIRFLOW_CTX_TASK_ID='extract_transform_load_db' AIRFLOW_CTX_EXECUTION_DATE='2026-06-15T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='3' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2026-06-15T00:00:00+00:00'
+[2026-06-16T06:06:39.735+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-06-16T06:06:40.184+0000] {transport.py:1874} INFO - Connected (version 2.0, client OpenSSH_8.2p1)
+[2026-06-16T06:06:40.882+0000] {transport.py:1874} INFO - Authentication (publickey) successful!
+[2026-06-16T06:06:40.888+0000] {logging_mixin.py:188} INFO - SSH Tunnel Connected
+[2026-06-16T06:06:40.926+0000] {logging_mixin.py:188} INFO - Database connection established.
+[2026-06-16T06:06:40.927+0000] {logging_mixin.py:188} INFO - --- Running Match Data Pipeline ---
+[2026-06-16T06:06:44.096+0000] {logging_mixin.py:188} WARNING - Traceback (most recent call last):
+[2026-06-16T06:06:44.097+0000] {logging_mixin.py:188} WARNING -   File "/opt/***/pipeline/data_pipeline.py", line 13, in match_run_pipeline
+    matches = self.ingestion.ingest_match_data()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-16T06:06:44.097+0000] {logging_mixin.py:188} WARNING -   File "/opt/***/components/data_ingestion.py", line 76, in ingest_match_data
+    matches_raw = self.read_match_data()
+                  ^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-16T06:06:44.098+0000] {logging_mixin.py:188} WARNING -   File "/opt/***/components/data_ingestion.py", line 66, in read_match_data
+    return pd.read_sql(self.match_query, conn)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-16T06:06:44.099+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/sql.py", line 702, in read_sql
+    return pandas_sql.read_query(
+           ^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-16T06:06:44.099+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/sql.py", line 2766, in read_query
+    cursor = self.execute(sql, params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-16T06:06:44.100+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/sql.py", line 2700, in execute
+    cur = self.con.cursor()
+          ^^^^^^^^^^^^^^^
+[2026-06-16T06:06:44.100+0000] {logging_mixin.py:188} WARNING - AttributeError: 'Connection' object has no attribute 'cursor'
+[2026-06-16T06:06:44.101+0000] {logging_mixin.py:188} INFO - 
+--- Running Player Data Pipeline ---
+[2026-06-16T06:06:44.269+0000] {logging_mixin.py:188} WARNING - Traceback (most recent call last):
+[2026-06-16T06:06:44.270+0000] {logging_mixin.py:188} WARNING -   File "/opt/***/pipeline/data_pipeline.py", line 27, in player_run_pipeline
+    matches = self.ingestion.ingest_match_data()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-16T06:06:44.270+0000] {logging_mixin.py:188} WARNING -   File "/opt/***/components/data_ingestion.py", line 76, in ingest_match_data
+    matches_raw = self.read_match_data()
+                  ^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-16T06:06:44.271+0000] {logging_mixin.py:188} WARNING -   File "/opt/***/components/data_ingestion.py", line 66, in read_match_data
+    return pd.read_sql(self.match_query, conn)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-16T06:06:44.271+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/sql.py", line 702, in read_sql
+    return pandas_sql.read_query(
+           ^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-16T06:06:44.271+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/sql.py", line 2766, in read_query
+    cursor = self.execute(sql, params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-06-16T06:06:44.272+0000] {logging_mixin.py:188} WARNING -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/sql.py", line 2700, in execute
+    cur = self.con.cursor()
+          ^^^^^^^^^^^^^^^
+[2026-06-16T06:06:44.272+0000] {logging_mixin.py:188} WARNING - AttributeError: 'Connection' object has no attribute 'cursor'
+[2026-06-16T06:06:44.273+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-06-16T06:06:44.274+0000] {taskinstance.py:2905} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 465, in _execute_task
+    result = _execute_callable(context=context, **execute_callable_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 432, in _execute_callable
+    return execute_callable(context=context, **execute_callable_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/baseoperator.py", line 400, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/python.py", line 235, in execute
+    return_value = self.execute_callable()
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/python.py", line 252, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/airflow/dags/futsal_pipeline.py", line 24, in run_data_etl
+    print(f"Data ETL complete. Processed {len(matches)} matches.")
+                                          ^^^^^^^^^^^^
+TypeError: object of type 'NoneType' has no len()
+[2026-06-16T06:06:44.288+0000] {taskinstance.py:1206} INFO - Marking task as UP_FOR_RETRY. dag_id=futsal_nightly_db_pipeline, task_id=extract_transform_load_db, run_id=scheduled__2026-06-15T00:00:00+00:00, execution_date=20260615T000000, start_date=20260616T060639, end_date=20260616T060644
+[2026-06-16T06:06:44.302+0000] {standard_task_runner.py:110} ERROR - Failed to execute job 10 for task extract_transform_load_db (object of type 'NoneType' has no len(); 211)
+[2026-06-16T06:06:44.344+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 1
+[2026-06-16T06:06:44.365+0000] {taskinstance.py:3498} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2026-06-16T06:06:44.368+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

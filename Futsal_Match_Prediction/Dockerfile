@@ -12,15 +12,8 @@ RUN apt-get update \
 # Switch back to airflow user
 USER airflow
 
+# Cache bust: 2026-06-16
 # Install python dependencies required by the pipeline
-RUN pip install --no-cache-dir \
-    "fastapi>=0.136.1" \
-    "joblib>=1.5.3" \
-    "numpy>=1.26.0" \
-    "pandas<2.2" \
-    "pydantic>=2.13.4" \
-    "pymysql>=1.2.0" \
-    "scikit-learn>=1.3.0" \
-    "sqlalchemy<2.0" \
-    "uvicorn>=0.47.0" \
-    "xgboost>=2.1.0"
+COPY pyproject.toml uv.lock ./
+RUN pip install --no-cache-dir uv && \
+    uv pip install --system --no-cache -r pyproject.toml
