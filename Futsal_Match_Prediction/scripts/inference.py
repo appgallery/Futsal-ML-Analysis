@@ -1,6 +1,6 @@
 import joblib
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional, Dict
 from components.data_transformation import DataTransformation
 from components.data_ingestion import DataIngestion
 import pandas as pd
@@ -9,10 +9,12 @@ import glob
 import os
 
 class MatchInput(BaseModel):
+    matchID: Optional[int] = None
     homeID: int
     awayID: int
 
 class MatchOutput(BaseModel):
+    matchID: Optional[int] = None
     homeID: int
     awayID: int
     prediction: str
@@ -23,6 +25,11 @@ class PlayerPrediction(BaseModel):
     playWellProbability: float
     predictedPerfScore: float
 
+class CommentaryOutput(BaseModel):
+    matchSummary: str
+    keyPlayerInsight: str
+    overallAssessment: str
+
 class MatchReportResponse(BaseModel):
     homeTeam: str
     awayTeam: str
@@ -31,6 +38,8 @@ class MatchReportResponse(BaseModel):
     predictedWinner: str
     predictedBestPlayer: str
     winningTeamPlayers: List[PlayerPrediction]
+    matchSummary: Optional[CommentaryOutput] = None
+    narrativeContext: Optional[dict] = None
 
     
 class Inference:
@@ -70,6 +79,7 @@ class Inference:
 
     def test_match_infer(self, data: MatchInput) -> MatchOutput:
         # Resolve IDs
+        match_id = data.matchID
         home_id = data.homeID
         away_id = data.awayID
         
@@ -137,13 +147,17 @@ class Inference:
         prediction_num = self.model.predict(X_infer)[0]
         
         # Some models support predict_proba, some don't (like SVC without probability=True)
-        confidence = 0.0
+        confidence = 1.0
         if hasattr(self.model, "predict_proba"):
-            probs = self.model.predict_proba(X_infer)[0]
-            confidence = float(np.max(probs))
+            try:
+                probs = self.model.predict_proba(X_infer)[0]
+                confidence = float(np.max(probs))
+            except Exception:
+                pass
             
         prediction_str = "Home Win" if prediction_num == 1 else "Away Win"
         return MatchOutput(
+            matchID=match_id,
             homeID=home_id,
             awayID=away_id,
             prediction=prediction_str,
@@ -152,6 +166,7 @@ class Inference:
 
     def test_player_infer(self, match_pred: MatchOutput) -> MatchReportResponse:
         # Extract team IDs
+        match_id = match_pred.matchID
         home_id = match_pred.homeID
         away_id = match_pred.awayID
 
@@ -247,15 +262,40 @@ class Inference:
         # Sort player predictions
         winning_players_df = winning_players_df.sort_values('play_well_probability', ascending=False)
 
+
+        di = DataIngestion()
+        if di.engine is not None and match_id is not None:
+            try:
+                attendance_query = "SELECT CONCAT(u.first_name, ' ', u.last_name) AS player_name FROM futsaloz.player_attendance pa INNER JOIN users u ON pa.user_id = u.user_id WHERE pa.match_id = %s AND pa.is_present = 1"
+                
+                raw_conn = di.engine.raw_connection()
+                try:
+                    attendance_df = pd.read_sql(attendance_query, raw_conn, params=[match_id])
+                finally:
+                    raw_conn.close()
+                
+                # Names present in this match only
+                match_players = set(
+                    attendance_df["player_name"].str.strip().str.lower()
+                )
+            finally:
+                di.close_connection()
+        else:
+            match_players = set()
+
         # Build Response Player List for predicted winning team only
         winning_players = []
         for _, row in winning_players_df.iterrows():
-            player_pred = PlayerPrediction(
-                playerName=row['player_name'],
-                playWellProbability=float(row['play_well_probability']),
-                predictedPerfScore=float(round(row['predicted_perf_score'], 2))
-            )
-            winning_players.append(player_pred)
+            player_name = row["player_name"].strip().lower()
+            
+            # If match_players is empty (no attendance data yet), assume all recent top players are available
+            if not match_players or player_name in match_players:
+                player_pred = PlayerPrediction(
+                    playerName=row['player_name'],
+                    playWellProbability=float(row['play_well_probability']),
+                    predictedPerfScore=float(round(row['predicted_perf_score'], 2))
+                )
+                winning_players.append(player_pred)
 
         predicted_best_player = winning_players[0].playerName if len(winning_players) > 0 else "N/A"
 

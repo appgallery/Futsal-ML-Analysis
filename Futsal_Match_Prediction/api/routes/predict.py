@@ -2,6 +2,7 @@ import os
 import contextlib
 import hashlib
 import json
+from typing import Optional
 from fastapi import APIRouter, FastAPI, HTTPException, Depends
 from scripts.inference import Inference, MatchInput, MatchOutput, MatchReportResponse
 from pipeline.data_pipeline import DataPipeline
@@ -48,7 +49,7 @@ async def lifespan(app: FastAPI):
 
 
 @routes.get("/predict", response_model=MatchReportResponse)
-def predict(homeID: int, awayID: int):
+async def predict(homeID: int, awayID: int, matchID: Optional[int] = None):
     if homeID == awayID:
         raise HTTPException(status_code=400, detail="homeID and awayID cannot be the same")
         
@@ -64,11 +65,33 @@ def predict(homeID: int, awayID: int):
     try:
         match_pred = inference_engine.test_match_infer(
             MatchInput(
+                matchID=matchID,
                 homeID=homeID,
                 awayID=awayID
             )
         )
         report = inference_engine.test_player_infer(match_pred)
+        
+        try:
+            report_dict = report.model_dump()
+            players_csv = "data/players_ml.csv"
+            matches_csv = "data/matches_ml.csv"
+            
+            if os.path.exists(players_csv) and os.path.exists(matches_csv):
+                from pipeline.narrative_pipeline import enrich_prediction_with_commentary
+                api_key = os.environ.get("GEMINI_API_KEY")
+                enriched = await enrich_prediction_with_commentary(
+                    prediction_json=report_dict,
+                    players_csv=players_csv,
+                    matches_csv=matches_csv,
+                    api_key=api_key
+                )
+                report = MatchReportResponse(**enriched)
+            else:
+                print(f"Warning: CSVs not found. players_ml.csv: {os.path.exists(players_csv)}, matches_ml.csv: {os.path.exists(matches_csv)}")
+        except Exception as narrative_err:
+            print(f"Error generating commentary: {narrative_err}")
+
         return report
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))

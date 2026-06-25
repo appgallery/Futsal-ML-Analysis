@@ -10,7 +10,7 @@ from sklearn.ensemble import (
     ExtraTreesRegressor
 )
 from sklearn.svm import SVC
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import GridSearchCV, TimeSeriesSplit
 from sklearn.metrics import (
     accuracy_score, 
     f1_score,
@@ -61,6 +61,13 @@ class MatchModelTrainer:
         self.grid_models = []
 
     def prepare_data(self, feature_df):
+        if 'startDate' in feature_df.columns:
+            feature_df['startDate'] = pd.to_datetime(
+                feature_df['startDate'],
+                errors='coerce'
+            )
+            feature_df = feature_df.sort_values('startDate')
+
         X = feature_df[self.feature].copy()
         y = feature_df[self.target].copy()
         return X, y, feature_df
@@ -84,6 +91,7 @@ class MatchModelTrainer:
         X_train, X_test, y_train, y_test = self.split_train_test(X, y)
         self.grid_models = []
         models_report = []
+        tscv = TimeSeriesSplit(n_splits=5)
 
         for classifier_name in self.params['classifier']:
             print(f"Grid searching: {classifier_name}...")
@@ -97,7 +105,7 @@ class MatchModelTrainer:
                     GridSearchCV(
                         pipeline,
                         grid_params,
-                        cv=3,
+                        cv=tscv,
                         scoring="accuracy",
                         n_jobs=1
                     )
@@ -112,7 +120,7 @@ class MatchModelTrainer:
                     GridSearchCV(
                         pipeline,
                         grid_params,
-                        cv=3,
+                        cv=tscv,
                         scoring="accuracy",
                         n_jobs=1
                     )
@@ -127,7 +135,7 @@ class MatchModelTrainer:
                     GridSearchCV(
                         pipeline,
                         grid_params,
-                        cv=3,
+                        cv=tscv,
                         scoring="accuracy",
                         n_jobs=1
                     )
@@ -235,6 +243,7 @@ class PlayerModelTrainer:
         X_train, X_test, y_train, y_test = self.split_train_test(X, y)
         self.grid_models = []
         models_report = []
+        tscv = TimeSeriesSplit(n_splits=5)
 
         classifiers = {
             "XGBoost": XGBClassifier(objective='binary:logistic', eval_metric='logloss', scale_pos_weight=7.5, random_state=42),
@@ -253,7 +262,7 @@ class PlayerModelTrainer:
                 estimator=model,
                 param_grid=self.params[name],
                 scoring='f1',
-                cv=3,
+                cv=tscv,
                 verbose=1,
                 n_jobs=n_jobs
             )

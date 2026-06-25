@@ -25,6 +25,18 @@ class DB:
 
     def db_test_connection(self):
         try:
+            if not os.path.exists(self.ssh_key):
+                print(f"ERROR: SSH private key file not found at {self.ssh_key}")
+                print("Did you forget to copy it to the Ubuntu server or is the docker volume hiding it?")
+                return False
+
+            try:
+                # Ensure correct permissions for the SSH key (required by SSH clients on Linux)
+                if os.name != 'nt':
+                    os.chmod(self.ssh_key, 0o400)
+            except Exception as perm_err:
+                print(f"Warning: Could not change permissions of {self.ssh_key}: {perm_err}")
+
             self.tunnel = SSHTunnelForwarder(
                 (self.ssh_host, self.ssh_port),
                 ssh_username=self.ssh_user,
@@ -37,7 +49,9 @@ class DB:
             return True
 
         except Exception as e:
-            print(f"Connection failed: {e}")
+            print(f"SSH Tunnel Connection failed: {type(e).__name__} - {str(e)}")
+            import traceback
+            traceback.print_exc()
             return False
 
     def db_create_engine(self):

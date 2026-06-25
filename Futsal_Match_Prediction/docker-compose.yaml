@@ -192,7 +192,7 @@ services:
           echo
         fi
         mkdir -p /sources/airflow/logs /sources/airflow/dags /sources/airflow/plugins
-        chown -R "${AIRFLOW_UID}:0" /sources/airflow/{logs,dags,plugins}
+        chown -R "${AIRFLOW_UID}:0" /sources/airflow/{logs,dags,plugins} /sources/db_pass
         exec /entrypoint airflow version
     # yamllint enable rule:line-length
     environment:
@@ -227,6 +227,7 @@ services:
       - "8000:8000"
     environment:
       - IN_DOCKER=true
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
     volumes:
       - .:/app
     restart: always

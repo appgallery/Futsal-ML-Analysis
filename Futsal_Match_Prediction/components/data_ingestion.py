@@ -51,8 +51,13 @@ class DataIngestion:
         """
 
         try:
-            self.db.db_test_connection()
+            if not self.db.db_test_connection():
+                raise ConnectionError("SSH Tunnel connection failed")
+            
             self.engine = self.db.db_create_engine()
+            if self.engine is None:
+                raise ConnectionError("Failed to create database engine")
+                
             print("Database connection established.")
         except Exception as e:
             self.engine = None

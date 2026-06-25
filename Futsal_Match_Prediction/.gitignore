@@ -1,0 +1,98 @@
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+*.env
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+# IDEs / Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS Generated
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Airflow
+airflow/logs/
+airflow-webserver.pid
+airflow.db
+airflow.cfg
+
+# Machine Learning Models & Features
+models/
+features/
+*.pkl
+*.joblib
+*.h5
+*.onnx
+
+# Datasets
+data/
+*.csv
+*.parquet
+*.jsonl
+
+# Credentials & Secrets
+db_pass/
+*.pem
+*.key
+credentials.json
+client_secret.json
+
+# Large Archives
+*.tar
+*.tar.gz
+*.zip
+*.rar
+futsal.tar
