@@ -215,7 +215,7 @@ class NarrativeContextBuilder:
             "career_matches":   int(latest["career_matches"]) if "career_matches" in latest else 0,
             "career_goals":     int(latest["career_goals"]) if "career_goals" in latest else 0,
             "career_assists":   int(latest["career_assists"]) if "career_assists" in latest else 0,
-            "career_gpg":       round(float(latest["career_gpg"]),       1) if "career_gpg" in latest else 0.0,
+            "career_gpg":       round(float(latest["career_gpg"]),       2) if "career_gpg" in latest else 0.0,
             "career_avg_perf":  round(float(latest["career_avg_perf"]),  1) if "career_avg_perf" in latest else 0.0,
 
             # Rolling windows
@@ -230,7 +230,7 @@ class NarrativeContextBuilder:
             "perf_trend":   round(float(latest["perf_trend"]),   1) if "perf_trend" in latest else 0.0,
 
             # Experience & peak
-            "experience_score": round(float(latest["experience_score"]), 1) if "experience_score" in latest else 0.0,
+            "experience_score": round(float(latest["experience_score"]), 2) if "experience_score" in latest else 0.0,
             "best_match_score": round(float(latest["best_match_score"]), 1) if "best_match_score" in latest else 0.0,
 
             # Last-5 raw goals

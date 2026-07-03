@@ -228,6 +228,7 @@ services:
     environment:
       - IN_DOCKER=true
       - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - FUTSALOZ_API_BASE_URL=${FUTSALOZ_API_BASE_URL}
     volumes:
       - .:/app
     restart: always

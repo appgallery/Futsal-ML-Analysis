@@ -111,7 +111,7 @@ class MatchModelTrainer:
                     )
                 ))
             elif classifier_name == "SVC":
-                algo = SVC
+                algo = lambda: SVC(probability=True)
                 params = self.params["SVC"]
                 grid_params = {f"classifier__{k}": v for k, v in params.items()}
                 pipeline = self.build_model(algo)

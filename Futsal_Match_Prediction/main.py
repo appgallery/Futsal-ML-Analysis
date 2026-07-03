@@ -24,22 +24,7 @@ def start_docker_compose():
 def main():
     start_docker_compose()
     host = "0.0.0.0" if os.environ.get("IN_DOCKER") else "localhost"
-    uvicorn.run("main:app", host=host, port=8000, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
 
 if __name__ == "__main__":
     main()
-
-
-
-
-# import uvicorn
-# from fastapi import FastAPI
-
-# from api.routes.predict import lifespan, routes
-
-# app = FastAPI(title="Futsal Match Prediction API", lifespan=lifespan)
-# app.include_router(routes)
-
-# if __name__ == "__main__":
-#     uvicorn.run("main:app", host="localhost", port=8000, reload=True)
-

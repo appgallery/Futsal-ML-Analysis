@@ -8,10 +8,59 @@ import numpy as np
 import glob
 import os
 
+class EloComparison(BaseModel):
+    homeElo: float
+    awayElo: float
+
+class FormComparison(BaseModel):
+    homeWeightedForm: float
+    awayWeightedForm: float
+
+class StrengthComparison(BaseModel):
+    home: float
+    away: float
+
+class HeadToHeadStats(BaseModel):
+    matchesPlayed: int
+    homeWinRate: float
+
+class MatchFeaturesContext(BaseModel):
+    eloComparison: EloComparison
+    formComparison: FormComparison
+    attackStrength: StrengthComparison
+    defenseStrength: StrengthComparison
+    cleanSheetRate: StrengthComparison
+    headToHead: HeadToHeadStats
+
+class CareerStats(BaseModel):
+    matches: int
+    goalsPerGame: float
+
+class RecentFormStats(BaseModel):
+    roll5PerfScore: float
+    roll5Goals: float
+    trend: str
+
+class PlayerInsight(BaseModel):
+    userID: Optional[int] = None
+    playerName: str
+    modelProbability: float
+    career: CareerStats
+    recentForm: RecentFormStats
+    experienceScore: float
+    clutchGoals: int
+
+class TechnicalContext(BaseModel):
+    modelConfidence: float
+    matchFeatures: MatchFeaturesContext
+    topPlayerInsights: List[PlayerInsight]
+
 class MatchInput(BaseModel):
     matchID: Optional[int] = None
     homeID: int
     awayID: int
+    homeTeamName: Optional[str] = None
+    awayTeamName: Optional[str] = None
 
 class MatchOutput(BaseModel):
     matchID: Optional[int] = None
@@ -19,8 +68,12 @@ class MatchOutput(BaseModel):
     awayID: int
     prediction: str
     confidence: float
+    homeTeamName: Optional[str] = None
+    awayTeamName: Optional[str] = None
+    matchFeaturesContext: Optional[MatchFeaturesContext] = None
 
 class PlayerPrediction(BaseModel):
+    userID: Optional[int] = None
     playerName: str
     playWellProbability: float
     predictedPerfScore: float
@@ -31,6 +84,9 @@ class CommentaryOutput(BaseModel):
     overallAssessment: str
 
 class MatchReportResponse(BaseModel):
+    matchID: Optional[int] = None
+    homeID: int
+    awayID: int
     homeTeam: str
     awayTeam: str
     homeWinProbability: float
@@ -40,6 +96,7 @@ class MatchReportResponse(BaseModel):
     winningTeamPlayers: List[PlayerPrediction]
     matchSummary: Optional[CommentaryOutput] = None
     narrativeContext: Optional[dict] = None
+    technicalContext: Optional[TechnicalContext] = None
 
     
 class Inference:
@@ -127,6 +184,18 @@ class Inference:
         else:
             h2h_home_win_rate = 0.5
             
+        home_clean_sheet_rate = sum(1 for g in hs['goals_conceded'] if g == 0) / len(hs['goals_conceded']) if len(hs['goals_conceded']) > 0 else 0
+        away_clean_sheet_rate = sum(1 for g in aws['goals_conceded'] if g == 0) / len(aws['goals_conceded']) if len(aws['goals_conceded']) > 0 else 0
+
+        match_features_ctx = MatchFeaturesContext(
+            eloComparison=EloComparison(homeElo=float(hs['elo']), awayElo=float(aws['elo'])),
+            formComparison=FormComparison(homeWeightedForm=float(home_wf), awayWeightedForm=float(away_wf)),
+            attackStrength=StrengthComparison(home=float(home_attack), away=float(away_attack)),
+            defenseStrength=StrengthComparison(home=float(home_defense), away=float(away_defense)),
+            cleanSheetRate=StrengthComparison(home=float(home_clean_sheet_rate), away=float(away_clean_sheet_rate)),
+            headToHead=HeadToHeadStats(matchesPlayed=int(h2h['matches']), homeWinRate=float(h2h_home_win_rate))
+        )
+            
         feature_dict = {
             'home_win_rate': [home_win_rate],
             'away_win_rate': [away_win_rate],
@@ -161,7 +230,10 @@ class Inference:
             homeID=home_id,
             awayID=away_id,
             prediction=prediction_str,
-            confidence=confidence
+            confidence=confidence,
+            homeTeamName=data.homeTeamName,
+            awayTeamName=data.awayTeamName,
+            matchFeaturesContext=match_features_ctx
         )
 
     def test_player_infer(self, match_pred: MatchOutput) -> MatchReportResponse:
@@ -213,8 +285,8 @@ class Inference:
         home_team_rows = team_mapping.loc[team_mapping['team_id'] == home_id, 'team_name']
         away_team_rows = team_mapping.loc[team_mapping['team_id'] == away_id, 'team_name']
 
-        home_team_name = home_team_rows.iloc[0] if len(home_team_rows) > 0 else f"Home Team {home_id}"
-        away_team_name = away_team_rows.iloc[0] if len(away_team_rows) > 0 else f"Away Team {away_id}"
+        home_team_name = match_pred.homeTeamName if match_pred.homeTeamName else (home_team_rows.iloc[0] if len(home_team_rows) > 0 else f"Home Team {home_id}")
+        away_team_name = match_pred.awayTeamName if match_pred.awayTeamName else (away_team_rows.iloc[0] if len(away_team_rows) > 0 else f"Away Team {away_id}")
 
         # Determine Winner dynamic details
         winner_id = home_id if match_pred.prediction == "Home Win" else away_id
@@ -285,26 +357,61 @@ class Inference:
 
         # Build Response Player List for predicted winning team only
         winning_players = []
+        top_player_insights = []
         for _, row in winning_players_df.iterrows():
             player_name = row["player_name"].strip().lower()
             
             # If match_players is empty (no attendance data yet), assume all recent top players are available
             if not match_players or player_name in match_players:
                 player_pred = PlayerPrediction(
+                    userID=int(row['user_id']) if pd.notnull(row.get('user_id')) else None,
                     playerName=row['player_name'],
                     playWellProbability=float(row['play_well_probability']),
                     predictedPerfScore=float(round(row['predicted_perf_score'], 2))
                 )
                 winning_players.append(player_pred)
+                
+                def safe_float(val, default=0.0):
+                    return float(val) if pd.notnull(val) else default
+                def safe_int(val, default=0):
+                    return int(val) if pd.notnull(val) else default
+
+                insight = PlayerInsight(
+                    userID=safe_int(row.get('user_id')) if pd.notnull(row.get('user_id')) else None,
+                    playerName=row['player_name'],
+                    modelProbability=float(row['play_well_probability']),
+                    career=CareerStats(
+                        matches=safe_int(row.get('career_matches', 0)),
+                        goalsPerGame=round(safe_float(row.get('career_gpg', 0.0)), 2)
+                    ),
+                    recentForm=RecentFormStats(
+                        roll5PerfScore=safe_float(row.get('roll5_perf_score', 0.0)),
+                        roll5Goals=safe_float(row.get('roll5_goals', 0.0)),
+                        trend="Improving" if safe_float(row.get('perf_trend', 0.0)) > 0 else ("Declining" if safe_float(row.get('perf_trend', 0.0)) < 0 else "Stable")
+                    ),
+                    experienceScore=round(safe_float(row.get('experience_score', 0.0)), 2),
+                    clutchGoals=safe_int(row.get('clutch_goals', 0))
+                )
+                top_player_insights.append(insight)
 
         predicted_best_player = winning_players[0].playerName if len(winning_players) > 0 else "N/A"
+        
+        tech_ctx = TechnicalContext(
+            modelConfidence=round(match_pred.confidence * 100, 2),
+            matchFeatures=match_pred.matchFeaturesContext,
+            topPlayerInsights=top_player_insights
+        ) if match_pred.matchFeaturesContext else None
 
         return MatchReportResponse(
+            matchID=match_id,
+            homeID=home_id,
+            awayID=away_id,
             homeTeam=home_team_name,
             awayTeam=away_team_name,
             homeWinProbability=home_win_probability,
             awayWinProbability=away_win_probability,
             predictedWinner=winner_team_name,
             predictedBestPlayer=predicted_best_player,
-            winningTeamPlayers=winning_players
+            winningTeamPlayers=winning_players,
+            technicalContext=tech_ctx
         )
